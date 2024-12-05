@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Festa Net Brasil</title>
+    
+    <!-- Estilos Gerais e Globais -->
+    <link rel="stylesheet" href="css/capafixa.css">
+    <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/navigation.css">
+    <link rel="stylesheet" href="css/typography.css">
+    <link rel="stylesheet" href="css/remove-bg.css">
+    <link rel="stylesheet" href="css/faq.css">
+    <link rel="stylesheet" href="css/services.css">
+    <link rel="stylesheet" href="css/special-offers.css">
+
+
+    <!-- Importação das Fontes do Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Dancing+Script&family=Parisienne&family=Satisfy&display=swap" rel="stylesheet">
+
+    <!-- Biblioteca de Lightbox -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css">
+</head>
+<body>
+    <!-- Navegação -->
+    <section class="navigation">
+        <div class="navigation-container">
+            <a href="https://www.festa.net.br/">
+                <img src="https://i.ibb.co/VDGyTDz/vazado-h-1.png" alt="Logo Festa Net Brasil" style="display: block;">
+                <span style="display: none;">Festa Net Brasil</span>
+            </a>
+            <button class="menu-toggle" aria-label="Abrir Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <nav class="menu-links">
+                <ul>
+                    <li><a href="./index.html">Personalizador</a></li>
+                    <li><a href="./edit.html">Criar Moldura</a></li>
+                    <li><a href="https://sou.festa.net.br/festcard" target="_blank">FestCard</a></li>
+                    <li><a href="https://www.festa.net.br/p/verificador-de-senha.html?page=gerador" target="_blank">Gerar Cobertura</a></li>
+                </ul>
+            </nav>
+        </div>
+    </section>
+
+    <!-- Capa Fixa -->
+    <header class="header-capa">
+        <img src="https://i.ibb.co/rsjP8cS/fa-180514526.webp" alt="Capa Fixa">
+    </header>
+
+        <div class="remove-bg-wrapper">
+        <section class="remove-bg-section">
+            <h2>Remover Cor</h2>
+            
+            <!-- Botão Personalizado para Upload -->
+            <div class="file-upload-wrapper">
+                <button class="upload-button" onclick="document.getElementById('imageUpload').click()">Selecionar Imagem</button>
+                <span id="file-name-display">Nenhum arquivo selecionado</span>
+                <input type="file" id="imageUpload" accept="image/*" style="display: none;" onchange="updateFileName()">
+            </div>
+            
+            <div class="color-options">
+                <div class="color-circle" id="color1" style="background-color: #C1FF72;" title="#C1FF72"></div>
+                <span>#C1FF72</span>
+                <div class="color-circle" id="color2" style="background-color: #D9D9D9;" title="#D9D9D9"></div>
+                <span>#D9D9D9</span>
+                <div class="color-circle" id="color3" style="background-color: #C2B997;" title="#C2B997"></div>
+                <span>#C2B997</span>
+            </div>
+            
+            <div id="result"></div>
+        </section>
+    </div>
+
+    <section class="special-offers">
+        <div class="special-offers-header">
+            <h2>Personalize com Estilo</h2>
+            <p>Acesse, edite, crie e baixe molduras incríveis. Transforme suas fotos em memórias surpreendentes com designs únicos e personalizados!</p>
+        </div>
+        <div class="special-offer-items">
+            <div class="special-offer">
+                <img src="https://i.ibb.co/4TyqbZn/fa-170607182.webp" alt="Molduras Editáveis">
+                <h3>Molduras Editáveis</h3>
+                <p>Modelos prontos para edição no Canva, permitindo reedição e download com total personalização.</p>
+                <a href="https://www.canva.com/design/DAGF5m9uFSQ/pjjvFkaHg8hkgKW2sQWOKA/view?utm_content=DAGF5m9uFSQ&utm_campaign=designshare&utm_medium=link&utm_source=publishsharelink&mode=preview" class="offer-button">Acessar</a>
+            </div>
+            <div class="special-offer">
+                <img src="https://i.ibb.co/YtqgYrv/fa-170611398.webp" alt="Molduras Personalizadas">
+                <h3>Personalizadas</h3>
+                <p>Crie molduras únicas usando o Removedor de Cor para remover fundos predefinidos e personalizar seus designs.</p>
+                <a href="https://www.canva.com/design/DAGK12uewjc/fevHCaWdQnNEx6gf5H85aA/view?utm_content=DAGK12uewjc&utm_campaign=designshare&utm_medium=link&utm_source=publishsharelink&mode=preview" class="offer-button">Acessar</a>
+            </div>
+            <div class="special-offer">
+                <img src="https://i.ibb.co/SJs0fMt/fa-170614975.webp" alt="Fundos para Molduras">
+                <h3>Fundos Molduras</h3>
+                <p>Adicione fundos personalizados às suas molduras utilizando nosso editor HTML exclusivo.</p>
+                <a href="https://www.canva.com/design/DAGX3izfKsM/8Q1SQljg3qsm9F-Y11OkKQ/view?utm_content=DAGX3izfKsM&utm_campaign=designshare&utm_medium=link&utm_source=publishsharelink&mode=preview" class="offer-button">Acessar</a>
+            </div>
+        </div>
+    </section>
+    
+    <div class="faq-section">
+        <section class="faq">
+            <div class="faq-header">
+                <h2>Perguntas Frequentes</h2>
+                <p>Encontre respostas para as dúvidas mais comuns sobre nosso criador de molduras Festa Net Brasil:</p>
+            </div>
+            <div class="faq-items">
+                <div class="faq-item">
+                    <h3>Quais cores podem ser removidas?</h3>
+                    <p>O Removedor de Cor é exclusivo do Festa Net Brasil e permite a remoção das cores #C1FF72, #D9D9D9 e #C2B997. Essas cores foram predefinidas para facilitar a criação de molduras personalizadas e garantir a compatibilidade com outros elementos gráficos.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Como posso usar em conjunto com outros aplicativos?</h3>
+                    <p>Após criar uma moldura em aplicativos como o Canva ou similares, você pode utilizar o Removedor de Cor para eliminar uma das cores predefinidas do fundo da moldura. Isso permite integrar facilmente a moldura ao seu design final, mantendo a qualidade e a personalização.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Quais vantagens oferece para a personalização?</h3>
+                    <p>O Removedor de Cor permite criar designs mais limpos e profissionais ao eliminar as cores de fundo predefinidas (#C1FF72, #D9D9D9 e #C2B997). Isso facilita a integração das molduras com qualquer tema ou layout, garantindo flexibilidade e harmonia visual nos seus projetos.</p>
+                </div>                
+            </div>
+        </section>
+    </div>
+
+    <div class="services-section">
+        <section class="services">
+            <div class="services-header">
+                <h2>Nossos Apps para Edição e Criação</h2>
+                <p>Explore ferramentas incríveis que facilitam a edição e criação de molduras e personalizações:</p>
+            </div>
+            <div class="service-items">
+                <div class="service">
+                    <h3>Personalizador de Fotos</h3>
+                    <p>Edite e personalize suas fotos com molduras, marcas d'água e outros recursos exclusivos. Ideal para criar imagens profissionais de forma rápida e prática.</p>
+                </div>
+                <div class="service">
+                    <h3>Criador de Molduras</h3>
+                    <p>Crie molduras personalizadas com títulos, subtítulos e datas. Escolha entre fundos sólidos, degradês ou imagens, tudo ajustável para um design perfeito.</p>
+                </div>
+                <div class="service">
+                    <h3>Removedor de Cor</h3>
+                    <p>Remova as cores #C1FF72, #D9D9D9 e #C2B997 de imagens para criar designs mais limpos e integrar elementos gráficos com outros aplicativos.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <!-- Rodapé -->
+    <footer>
+        <p>&copy; 2024 Todos os direitos reservados. Desenvolvido por <a href="https://www.festa.net.br/">Festa Net Brasil</a>.</p>
+        <p>
+            <a href="https://www.festa.net.br/p/termos-de-uso-festa-net-brasil.html">Termos de Uso</a> - 
+            <a href="https://www.festa.net.br/p/politica-de-privacidade-festa-net-brasil.html">Política de Privacidade</a> - 
+            <a href="https://www.festa.net.br/p/termo-de-responsabilidade-postagens-de.html">Termo de Responsabilidade</a> - 
+            <a href="https://www.festa.net.br/p/politica-de-conteudo-da-festa-net-brasil.html">Política de Conteúdo</a> - 
+            <a href="https://www.festa.net.br/p/licenca-de-uso-de-imagem-festa-net.html">Licença de Uso de Imagem</a> - 
+            <a href="https://chatgpt.com/g/g-glbFicnV7-suporte-festa-net-brasil">Suporte 24h Via ChatGPT</a> - 
+            <a href="https://sou.festa.net.br/denuncie">Denuncie</a>
+        </p>
+        <p>O uso desta aplicação é exclusivo para membros e usuários autorizados do Festa Net Brasil.</p>
+    </footer>
+    
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox-plus-jquery.min.js"></script>
+    <script src="js/navigation.js" defer></script>
+    <script src="js/remove-bg.js" defer></script>
+    <script src="js/faq.js"></script>
+</body>
+</html>

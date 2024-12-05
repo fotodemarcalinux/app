@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Festa Net Brasil</title>
+    
+    <!-- Estilos Gerais e Globais -->
+    <link rel="stylesheet" href="css/capafixa.css">
+    <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/navigation.css">
+    <link rel="stylesheet" href="css/typography.css">
+    <link rel="stylesheet" href="css/qr-code-generator.css">
+    <link rel="stylesheet" href="css/image-converter.css">
+
+
+    <!-- Importação das Fontes do Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Dancing+Script&family=Parisienne&family=Satisfy&display=swap" rel="stylesheet">
+
+    <!-- Biblioteca de Lightbox -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css">
+</head>
+<body>
+    <!-- Navegação -->
+    <section class="navigation">
+        <div class="navigation-container">
+            <a href="https://www.festa.net.br/">
+                <img src="https://i.ibb.co/VDGyTDz/vazado-h-1.png" alt="Logo Festa Net Brasil" style="display: block;">
+                <span style="display: none;">Festa Net Brasil</span>
+            </a>
+            <button class="menu-toggle" aria-label="Abrir Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <nav class="menu-links">
+                <ul>
+                    <li><a href="./edit.html" target="_blank">Criar Moldura</a></li>
+                    <li><a href="./index.html" target="_blank">Personalizador</a></li>
+                    <li><a href="./removedor.html" target="_blank">Remover Cor</a></li>
+                    <li><a href="https://sou.festa.net.br/festcard" target="_blank">FestCard</a></li>
+                    <li><a href="https://www.festa.net.br/p/verificador-de-senha.html?page=gerador" target="_blank">Gerar Cobertura</a></li>
+                </ul>
+            </nav>
+        </div>
+    </section>
+
+    <!-- Capa Fixa -->
+    <header class="header-capa">
+        <img src="https://i.ibb.co/RcdsJ2r/fa-123601626.webp" alt="Capa Fixa">
+    </header>
+
+    <div class="qr-code-generator">
+        <h2>Gerador de QR Code</h2>
+    
+        <div class="qr-code-form">
+            <!-- Campo para inserir texto -->
+            <input type="text" id="qr-text" placeholder="Digite o texto ou link aqui" />
+    
+            <!-- Botão de geração -->
+            <button id="generate-qr">Gerar QR Code</button>
+        </div>
+    
+        <!-- Área para exibir o QR Code -->
+        <div id="qr-code-display"></div>
+    
+        <!-- Botão para baixar o QR Code -->
+        <button id="download-qr" style="display: none;">Baixar QR Code</button>
+    </div>
+
+    <div class="image-converter">
+        <h2>Conversor de PNG para WEBP</h2>
+    
+        <!-- Área de Upload -->
+        <div class="upload-section">
+            <input type="file" id="upload" accept="image/png" multiple class="hidden">
+            <label for="upload" class="upload-btn">Carregar PNGs</label>
+            <p id="status">Selecione arquivos PNG para converter.</p>
+        </div>
+    </div>                    
+    
+    <!-- Rodapé -->
+    <footer>
+        <p>&copy; 2024 Todos os direitos reservados. Desenvolvido por <a href="https://www.festa.net.br/">Festa Net Brasil</a>.</p>
+        <p>
+            <a href="https://www.festa.net.br/p/termos-de-uso-festa-net-brasil.html">Termos de Uso</a> - 
+            <a href="https://www.festa.net.br/p/politica-de-privacidade-festa-net-brasil.html">Política de Privacidade</a> - 
+            <a href="https://www.festa.net.br/p/termo-de-responsabilidade-postagens-de.html">Termo de Responsabilidade</a> - 
+            <a href="https://www.festa.net.br/p/politica-de-conteudo-da-festa-net-brasil.html">Política de Conteúdo</a> - 
+            <a href="https://www.festa.net.br/p/licenca-de-uso-de-imagem-festa-net.html">Licença de Uso de Imagem</a> - 
+            <a href="https://chatgpt.com/g/g-glbFicnV7-suporte-festa-net-brasil">Suporte 24h Via ChatGPT</a> - 
+            <a href="https://sou.festa.net.br/denuncie">Denuncie</a>
+        </p>
+        <p>O uso desta aplicação é exclusivo para membros e usuários autorizados do Festa Net Brasil.</p>
+    </footer>
+    
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox-plus-jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="js/navigation.js" defer></script>
+    <script src="js/image-converter.js"></script>
+</body>
+</html>
