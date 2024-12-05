@@ -1,0 +1,86 @@
+/* Estilo das pré-visualizações de cores */
+.color-preview-container {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Espaço entre o preview e o label */
+    position: relative; /* Posicionamento relativo para o container */
+}
+
+.color-preview {
+    width: 50px;
+    height: 50px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.color-preview:hover {
+    transform: scale(1.1);
+    border-color: #8A2BE2;
+    box-shadow: 0 4px 8px rgba(138, 43, 226, 0.2);
+}
+
+input[type="color"],
+input[type="file"] {
+    position: absolute;
+    top: 0; /* Ajusta com relação ao container pai */
+    left: 60px; /* Ajusta para ficar próximo ao lado direito do preview */
+    z-index: 10;
+    opacity: 0; /* Inicialmente escondido */
+    pointer-events: none; /* Não clicável até ativado */
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    transform: scale(0.95); /* Pequeno ajuste inicial */
+}
+
+input[type="color"]:focus,
+input[type="color"]:active,
+input[type="file"]:focus,
+input[type="file"]:active {
+    opacity: 1;
+    pointer-events: auto;
+    transform: scale(1); /* Mostra normalmente quando ativo */
+}
+
+/* Cores iniciais nos previews */
+#solid-color-preview {
+    background-color: #FFD700;
+}
+
+#gradient-start-preview {
+    background-color: #8A2BE2;
+}
+
+#gradient-end-preview {
+    background-color: #FFD700;
+}
+
+#image-preview {
+    background: #e0e0e0 url('https://via.placeholder.com/50') center/cover no-repeat;
+    border: 2px dashed #ccc;
+}
+
+/* Estilo para a pré-visualização da imagem da moldura dinâmica */
+.native-image-container.hidden {
+    display: none; /* Oculta a seção */
+}
+
+#native-image-preview {
+    background-color: #e0e0e0;
+    width: 50px;
+    height: 50px;
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    background-size: cover;
+    background-position: center;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+#native-image-preview:hover {
+    transform: scale(1.1);
+    border-color: #8A2BE2;
+    box-shadow: 0 4px 8px rgba(138, 43, 226, 0.2);
+}

@@ -1,0 +1,30 @@
+/* Capa Fixa */
+.header-capa {
+    position: relative;
+    width: 100%; /* Ocupa 100% da largura disponível */
+    height: auto; /* Ajusta a altura de forma proporcional */
+    overflow: hidden; /* Garante que o conteúdo não ultrapasse o container */
+    margin: 0; /* Remove margens adicionais */
+    padding: 0; /* Remove preenchimentos adicionais */
+}
+
+.header-capa img {
+    width: 100%; /* Ajusta a largura da imagem ao container */
+    height: auto; /* Mantém a proporção da imagem */
+    object-fit: cover; /* Preenche o container mantendo as proporções */
+    object-position: center; /* Centraliza a imagem */
+    display: block; /* Remove espaços extras causados pelo inline-block */
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .header-capa {
+        height: auto; /* Permite que a altura seja ajustada automaticamente */
+    }
+
+    .header-capa img {
+        width: 100%; /* Ajusta a largura da imagem ao container */
+        height: auto; /* Mantém as proporções em telas menores */
+        object-fit: cover; /* Garante que a imagem preencha o container */
+    }
+}

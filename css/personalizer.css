@@ -1,0 +1,101 @@
+/* Sessão Principal */
+.personalizer-wrapper {
+    margin: 40px 0;
+}
+
+/* Estilo da Sessão */
+.personalizer-section {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.personalizer-section h2 {
+    font-size: 1.8rem;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin: 20px 0;
+    text-align: center;
+    display: flex;
+    flex-direction: column; /* Força o empilhamento dos elementos */
+    align-items: center;    /* Centraliza os elementos */
+}
+
+.custom-file-upload {
+    padding: 10px 20px;
+    color: white;
+    border-radius: 5px;
+    font-size: 1rem;
+    background-color: #0a847d;
+    display: inline-block;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+    margin-bottom: 10px; /* Adiciona espaço entre botão e descrição */
+}
+
+#selectMolduraButton {
+    background-color: #c6339c;
+}
+
+.custom-file-upload:hover {
+    opacity: 0.8;
+}
+
+input[type="file"] {
+    display: none;
+}
+
+.file-info {
+    font-size: 0.9rem;
+    color: #777;
+}
+
+.action-button {
+    padding: 12px 20px;
+    background-color: #2575fc;
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.action-button:hover {
+    background-color: #1e63cc;
+}
+
+#progressView {
+    margin-top: 20px;
+    text-align: center;
+}
+
+#progressView img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 20px auto;
+}
+
+/* Responsividade */
+@media screen and (max-width: 768px) {
+    .personalizer-section {
+        padding: 10px;
+    }
+
+    .custom-file-upload,
+    .action-button {
+        width: 100%;
+    }
+
+    .file-info {
+        font-size: 0.8rem;
+    }
+}

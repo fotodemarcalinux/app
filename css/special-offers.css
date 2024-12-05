@@ -1,0 +1,74 @@
+/* special-offers.css */
+.special-offers {
+    background: #fff;
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.special-offers-header {
+    margin-bottom: 40px;
+}
+
+.special-offers-header h2 {
+    font-size: 2.5em;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.special-offers-header p {
+    font-size: 1.2em;
+    color: #666;
+}
+
+.special-offer-items {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.special-offer {
+    background: #f9f9f9;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    max-width: 300px;
+    text-align: center;
+}
+
+.special-offer img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.special-offer h3 {
+    font-size: 1.5em;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.special-offer p {
+    font-size: 1.1em;
+    color: #555;
+}
+
+.special-offer .offer-button {
+    display: inline-block;
+    margin-top: 15px;
+    background-color: #2575fc;
+    color: #fff;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 30px;
+    transition: background 0.3s ease, transform 0.3s ease;
+    font-size: 1em;
+}
+
+.special-offer .offer-button:hover {
+    background-color: #1b5bbf;
+    transform: scale(1.05);
+}
+

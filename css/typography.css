@@ -1,0 +1,46 @@
+/* Tipografia Global */
+body {
+    font-size: 16px; /* Tamanho base */
+    line-height: 1.6;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin: 0 0 10px;
+    font-weight: 700;
+}
+
+p {
+    margin: 0 0 20px;
+    font-weight: 400;
+}
+
+/* Tipografia Responsiva */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2em; /* 32px */
+    }
+    h2 {
+        font-size: 1.75em; /* 28px */
+    }
+    h3 {
+        font-size: 1.5em; /* 24px */
+    }
+    body {
+        font-size: 15px; /* Texto ligeiramente menor */
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 1.8em; /* 29px */
+    }
+    h2 {
+        font-size: 1.5em; /* 24px */
+    }
+    h3 {
+        font-size: 1.25em; /* 20px */
+    }
+    body {
+        font-size: 14px; /* Texto ainda menor para telas pequenas */
+    }
+}

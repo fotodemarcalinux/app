@@ -1,0 +1,56 @@
+/* Container para a imagem nativa */
+.native-image-container {
+    display: flex;
+    justify-content: center; /* Centraliza a imagem horizontalmente */
+    align-items: flex-start; /* Garante que a parte superior da imagem seja exibida */
+    width: 100%; /* Alinha com a largura disponível */
+    max-width: 1984px; /* Limita a largura ao mesmo valor da moldura */
+    padding: 0 40px; /* Mesmo espaçamento lateral da moldura */
+    margin: 0 auto -50px; /* Remove a margem inferior sem alterar as dimensões */
+    height: 970px; /* Altura fixa da imagem */
+    overflow: hidden; /* Corta a parte inferior excedente da imagem */
+    box-sizing: border-box;
+}
+
+.native-image-container.hidden {
+    display: none; /* Oculta a seção */
+}
+
+/* Estilo da imagem */
+.native-image {
+    width: 100%; /* Ajusta a imagem à largura do container */
+    height: auto; /* Mantém a proporção da imagem */
+    object-fit: cover; /* Garante que a imagem preencha o container */
+    object-position: top; /* Mostra a parte superior da imagem */
+    display: block;
+}
+
+/* Responsividade para telas menores */
+@media (max-width: 768px) {
+    .native-image-container {
+        max-width: 100%; /* Remove o limite de largura */
+        padding: 0 20px; /* Reduz o espaçamento lateral */
+        height: auto; /* Ajusta a altura automaticamente */
+        margin: 0 auto -50px; /* Reduz a margem inferior */
+    }
+
+    .native-image {
+        width: 100%; /* Garante que a imagem preencha o container */
+        height: auto; /* Ajusta proporcionalmente */
+        object-fit: cover; /* Mantém o corte proporcional */
+    }
+}
+
+/* Responsividade para telas intermediárias */
+@media (max-width: 1024px) {
+    .native-image-container {
+        max-width: 95%; /* Ajusta a largura para ocupar mais espaço */
+        padding: 0 20px; /* Ajusta o espaçamento lateral */
+        height: auto; /* Ajusta a altura proporcionalmente */
+    }
+
+    .native-image {
+        width: 100%; /* Garante o preenchimento completo */
+        height: auto; /* Ajusta proporcionalmente */
+    }
+}

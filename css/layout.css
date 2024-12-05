@@ -1,0 +1,25 @@
+/* Sistema de Grid Global */
+.container {
+    display: flex;
+    flex-wrap: wrap; /* Permite quebra de linha */
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: space-between;
+}
+
+.col {
+    flex: 1 1 calc(33.333% - 20px); /* 3 colunas por linha */
+    box-sizing: border-box;
+}
+
+/* Espaço adicional para sessões, se necessário */
+body {
+    margin: 0; /* Remove margens automáticas */
+    padding: 0; /* Remove padding adicional */
+}

@@ -1,0 +1,125 @@
+#custom-moldura {
+    padding: 0 40px; /* Espaçamento interno da sessão */
+    box-sizing: border-box; /* Inclui padding nas dimensões totais */
+    max-width: 100%; /* Evita que a sessão ultrapasse o viewport */
+}
+
+.preview-panel {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px; /* Espaçamento ao redor da pré-visualização */
+    box-sizing: border-box;
+    max-width: 100%; /* Evita que a pré-visualização ultrapasse o viewport */
+}
+
+.moldura-container {
+    margin: 0 auto; /* Centraliza horizontalmente */
+    width: auto; /* Ajusta a largura automaticamente */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    padding: 20px 0; /* Espaçamento entre a moldura e as bordas verticais */
+    box-sizing: border-box;
+}
+
+.moldura {
+    position: relative;
+    width: 1984px;
+    height: 120px;
+    background: linear-gradient(90deg, #000000, #8A2BE2, #FFD700);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.moldura h3 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 28px;
+    color: #ffffff;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0;
+}
+
+.moldura h1 {
+    font-family: 'Great Vibes', cursive;
+    font-size: 36px;
+    color: #ffffff;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0;
+}
+
+.moldura p {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    color: #ffffff;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+    position: absolute;
+    bottom: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0;
+}
+
+.ornamento {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    z-index: 1;
+}
+
+.ornamento.left {
+    left: 0;
+    background: url('https://cdn.pixabay.com/photo/2016/12/20/23/08/ornament-1926123_960_720.png') no-repeat center;
+}
+
+.ornamento.right {
+    right: 0;
+    background: url('https://cdn.pixabay.com/photo/2016/12/20/23/08/ornament-1926123_960_720.png') no-repeat center;
+}
+
+.preview-panel {
+    padding: 0 20px; /* Adiciona espaçamento horizontal */
+    box-sizing: border-box; /* Garante que o padding seja incluído nas dimensões */
+}
+
+@media (max-width: 768px) {
+    .moldura-container {
+        padding: 0 10px;
+    }
+    .moldura {
+        width: 100%;
+        height: auto;
+    }
+    .moldura h3 {
+        font-size: 24px;
+    }
+    .moldura h1 {
+        font-size: 28px;
+    }
+    .moldura p {
+        font-size: 14px;
+    }
+    .ornamento {
+        width: 60px;
+    }
+
+    .preview-panel {
+        padding: 0 10px; /* Reduz o espaçamento em telas menores */
+    }
+}

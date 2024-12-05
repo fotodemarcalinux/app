@@ -1,0 +1,70 @@
+/* Estilos Gerais da Seção */
+#custom-moldura {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+    align-items: center;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Painel de Controles */
+/* Painel de Controles */
+.controls-panel {
+    display: flex;
+    justify-content: space-evenly; /* Espaçamento equilibrado entre as colunas */
+    gap: 25px;
+    width: 100%;
+    max-width: 97%; /* Alinha com a largura da moldura */
+    padding: 25px; /* Mais espaçamento interno */
+    border: 1px solid #ccc; /* Borda mais clara */
+    background: linear-gradient(90deg, #f9f9f9, #ffffff); /* Fundo com gradiente sutil */
+    border-radius: 10px; /* Arredondamento mais elegante */
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.1); /* Sombra mais pronunciada */
+    margin: 5% auto; /* Adiciona margem superior de 20px e mantém o painel centralizado */
+    box-sizing: border-box;
+}
+
+/* Contêiner do Botão de Download */
+.download-container {
+    display: flex;
+    justify-content: center; /* Centraliza o botão horizontalmente */
+    width: 100%; /* Garante que ocupe toda a largura */
+    margin-top: 2%; /* Espaçamento acima */
+    margin-bottom: 20px; /* Espaçamento abaixo */
+}
+
+/* Estilo do Botão de Download */
+#download-btn {
+    background: linear-gradient(90deg, #8A2BE2, #5c1c8c); /* Gradiente elegante */
+    color: #fff;
+    font-weight: bold;
+    font-size: 18px;
+    padding: 15px 25px;
+    border: none;
+    border-radius: 10px; /* Bordas arredondadas */
+    cursor: pointer;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Sombra leve */
+    transition: transform 0.2s ease, background 0.3s ease;
+}
+
+#download-btn:hover {
+    transform: translateY(-3px); /* Elevação ao passar o mouse */
+    background: linear-gradient(90deg, #5c1c8c, #8A2BE2); /* Inverter gradiente no hover */
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3); /* Sombra maior no hover */
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .controls-panel {
+        flex-direction: column; /* Torna as colunas verticais em telas menores */
+        gap: 20px; /* Espaçamento maior para maior clareza */
+        padding: 20px; /* Ajuste interno em telas menores */
+    }
+
+    #download-btn {
+        font-size: 16px;
+        padding: 12px 20px; /* Botão menor em telas menores */
+    }
+}

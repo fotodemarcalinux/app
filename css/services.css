@@ -1,0 +1,84 @@
+/* services.css */
+.services-section {
+    background: #f0f0f0; /* Cor do fundo */
+    padding: 0; /* Remove espaçamentos externos */
+    margin: 0; /* Garante que o fundo ocupe toda a largura */
+}
+
+.services {
+    max-width: 1200px; /* Centraliza o conteúdo */
+    margin: 0 auto; /* Centraliza horizontalmente */
+    padding: 60px 20px; /* Espaçamento interno */
+    text-align: center;
+}
+
+.services-header {
+    margin-bottom: 40px;
+}
+
+.services-header h2 {
+    font-size: 2.5em;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.services-header p {
+    font-size: 1.2em;
+    color: #666;
+}
+
+.service-items {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.service {
+    background: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    max-width: 300px;
+    text-align: left;
+}
+
+.service h3 {
+    font-size: 1.8em;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.service p {
+    font-size: 1.1em;
+    color: #555;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .service-items {
+        flex-wrap: wrap; /* Permite quebra de linha */
+    }
+
+    .service {
+        max-width: 100%; /* Alinha em uma coluna */
+    }
+}
+
+@media (max-width: 480px) {
+    .services-header h2 {
+        font-size: 2em;
+    }
+
+    .services-header p {
+        font-size: 1em;
+    }
+
+    .service h3 {
+        font-size: 1.5em;
+    }
+
+    .service p {
+        font-size: 1em;
+    }
+}

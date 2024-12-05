@@ -1,0 +1,80 @@
+/* Estilos de Formulário - Colunas 2 e 3 */
+.column {
+    display: flex;
+    flex-direction: column; /* Elementos dentro de cada coluna ficam em linha */
+    flex: 1; /* Cada coluna ocupa o mesmo espaço */
+    gap: 15px; /* Mais espaçamento entre os itens */
+}
+
+.column label {
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 5px; /* Espaçamento entre o label e o campo */
+}
+
+.column input,
+.column select {
+    padding: 12px; /* Mais espaçamento para campos */
+    font-size: 16px; /* Fonte maior para legibilidade */
+    border: 1px solid #bbb; /* Tom de borda levemente mais claro */
+    border-radius: 6px; /* Arredondamento maior */
+    box-sizing: border-box;
+    width: 100%;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.column input:focus,
+.column select:focus {
+    border-color: #8A2BE2; /* Realce no foco */
+    box-shadow: 0 0 5px rgba(138, 43, 226, 0.5); /* Sombra no foco */
+}
+
+/* Garantir que a moldura fique abaixo da seção de edição */
+#custom-moldura {
+    display: flex;
+    flex-direction: column; /* Empilha as seções verticalmente */
+    gap: 20px; /* Espaçamento entre a edição e a moldura */
+}
+
+/* Garantir alinhamento lado a lado das colunas na sessão de edição */
+.controls-panel {
+    display: flex;
+    flex-direction: row; /* Alinha as colunas lado a lado */
+    gap: 20px; /* Espaço entre as colunas */
+}
+
+/* Estilos do preview da cor e alinhamento com o tamanho da fonte */
+.column div[style*="display: flex"] {
+    display: flex;
+    align-items: center; /* Alinha os itens verticalmente */
+    gap: 10px; /* Espaço entre os elementos */
+}
+
+#font-color-preview {
+    width: 30px;
+    height: 30px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#font-color-preview:hover {
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+/* Responsividade para inputs e selects */
+@media (max-width: 768px) {
+    .controls-panel {
+        flex-direction: column; /* Empilha as colunas verticalmente em telas menores */
+    }
+
+    .column input,
+    .column select {
+        font-size: 14px; /* Fonte menor em telas menores */
+        padding: 10px;
+    }
+
+    .column div[style*="display: flex"] {
+        flex-direction: column; /* Alinha verticalmente em telas menores */
+    }
+}
