@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang='pt-BR'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>Personalização - Casa Nova 2024</title>
+    <link rel='icon' href='../assets/favicon.ico' type='image/x-icon'>
+
+    <!-- Estilos Gerais e Globais -->
+    <link rel='stylesheet' href='../css/personalizador.css'>
+    <link rel='stylesheet' href='../css/layout.css'>
+    <link rel='stylesheet' href='../css/main.css'>
+    <link rel='stylesheet' href='../css/typography.css'>
+    <link rel='stylesheet' href='../css/footer.css'>
+    <link rel='stylesheet' href='../css/navigation.css'>
+    <link rel='stylesheet' href='../css/capafixa.css'>
+
+    <!-- Biblioteca de Lightbox -->
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css'>
+</head>
+<body>
+    <!-- Navegação -->
+    <section class='navigation'>
+        <div class='navigation-container'>
+            <div class='site-logo'>
+                <a href='index.html'>Grupo Foto de Marca</a>
+            </div>
+            <button class='menu-toggle' aria-label='Abrir Menu'>
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <nav class='menu-links'>
+                <ul>
+                    <li><a href='#services'>Serviços</a></li>
+                    <li><a href='#portfolio'>Portfólio</a></li>
+                    <li><a href='#team'>Nosso Time</a></li>
+                    <li><a href='#contact'>Contato</a></li>
+                    <li><a href='https://linkexterno.com' target='_blank'>Link Externo</a></li>
+                </ul>
+            </nav>
+        </div>
+    </section>
+
+    <!-- Capa fixa -->
+    <header class='header-capa'>
+    <img src='https://i.ibb.co/TMkxDbc/fa-123509288.webp' alt='Capa Fixa'>
+    </header>
+
+    <!-- Conteúdo principal -->
+    <div class='personalizador-container'>
+        <h1 class='personalizador-header'>Personalize suas fotos com Casa Nova 2024</h1>
+        <div class='personalizador-form-section'>
+            <form>
+                <label for='images' class='personalizador-upload-label'>Selecione suas fotos</label>
+                <input type='file' id='images' accept='image/*' multiple class='personalizador-file-input'>
+                <span id='imagesPreviewText' class='personalizador-file-info'>Nenhuma foto escolhida</span>
+                <button type='button' id='convertButton' class='personalizador-button'>Personalizar Fotos</button>
+            </form>
+            <div id='progressView' class='personalizador-progress'></div>
+        </div>
+    </div>
+
+    <!-- Mensagem de compartilhamento -->
+    <div class='personalizador-message-box'>
+        <p id='shareText'>Estou na maior plataforma de coberturas fotográficas do Brasil, <strong>Festa Net Brasil</strong>, confira em www.festa.net.br a cobertura completa de <strong>CasaNova2024</strong>. 🎉📸</p>
+        <p>Ou acompanhe na hashtag: <strong>#CasaNova2024cariribar @barcariri</strong> e <strong>#festanetbrasil</strong></p>
+        <button id='copyMessageButton' class='personalizador-message-box-button'>Copiar mensagem</button>
+    </div>
+
+    <!-- Link opcional para publicação no Festa Net Brasil -->
+    
+    <div class='personalizador-message-box'>
+        <p>Após compartilhar hashtag e foto no Instagram, compartilhe também na plataforma <strong>Festa Net Brasil</strong>.</p>
+        <a href='https://www.fotodemarca.com.br/' class='personalizador-message-box-link' target='_blank'>Publicar no Festa Net Brasil</a>
+    </div>
+
+    <!-- Rodapé -->
+    <footer>
+        <p>&copy; 2024 Todos os direitos reservados. Desenvolvido por <a href='https://www.festa.net.br/'>Festa Net Brasil</a>.</p>
+        <p>
+            <a href='https://www.festa.net.br/p/termos-de-uso-festa-net-brasil.html'>Termos de Uso</a> - 
+            <a href='https://www.festa.net.br/p/politica-de-privacidade-festa-net-brasil.html'>Política de Privacidade</a> - 
+            <a href='https://www.festa.net.br/p/termo-de-responsabilidade-postagens-de.html'>Termo de Responsabilidade</a> - 
+            <a href='https://www.festa.net.br/p/politica-de-conteudo-da-festa-net-brasil.html'>Política de Conteúdo</a> - 
+            <a href='https://www.festa.net.br/p/licenca-de-uso-de-imagem-festa-net.html'>Licença de Uso de Imagem</a> - 
+            <a href='https://chatgpt.com/g/g-glbFicnV7-suporte-festa-net-brasil'>Suporte 24h Via ChatGPT</a> - 
+            <a href='https://sou.festa.net.br/denuncie'>Denuncie</a>
+        </p>
+        <p>O uso desta aplicação é exclusivo para membros e usuários autorizados do Festa Net Brasil.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox-plus-jquery.min.js'></script>
+    <script>
+        const userWatermarkUrl = '../Festa/CasaNova2024.png';
+        const nativeWatermarkUrl = '../assets/native_watermark.webp';
+
+        document.getElementById('copyMessageButton').addEventListener('click', function() {
+            const shareText = document.getElementById('shareText').innerText + '\n' + document.querySelector('.personalizador-message-box p:nth-child(2)').innerText;
+            navigator.clipboard.writeText(shareText)
+                .then(() => {
+                    alert('Mensagem copiada para a área de transferência!');
+                })
+                .catch(err => {
+                    console.error('Erro ao copiar mensagem:', err);
+                });
+        });
+    </script>
+    <script src='../js/main.js'></script>
+    <script src='../js/navigation.js' defer></script>
+</body>
+</html>
