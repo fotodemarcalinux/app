@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reencontro - Aline & Fabio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Dancing+Script:wght@400;700&display=swap');
+        
+        .romantic-bg {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 25%, #0f3460 50%, #533483 75%, #e94560 100%);
+            animation: gradientShift 8s ease-in-out infinite;
+        }
+        
+        @keyframes gradientShift {
+            0%, 100% { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 25%, #0f3460 50%, #533483 75%, #e94560 100%); }
+            50% { background: linear-gradient(135deg, #e94560 0%, #533483 25%, #0f3460 50%, #16213e 75%, #1a1a2e 100%); }
+        }
+        
+        .floating-hearts {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        
+        .heart {
+            position: absolute;
+            color: rgba(233, 69, 96, 0.3);
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+        }
+        
+        .pulse-glow {
+            animation: pulseGlow 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(233, 69, 96, 0.5); }
+            50% { box-shadow: 0 0 40px rgba(233, 69, 96, 0.8), 0 0 60px rgba(233, 69, 96, 0.4); }
+        }
+        
+        .dramatic-text {
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            animation: textGlow 3s ease-in-out infinite;
+        }
+        
+        @keyframes textGlow {
+            0%, 100% { text-shadow: 2px 2px 4px rgba(0,0,0,0.5), 0 0 10px rgba(255,255,255,0.3); }
+            50% { text-shadow: 2px 2px 4px rgba(0,0,0,0.5), 0 0 20px rgba(255,255,255,0.6), 0 0 30px rgba(233, 69, 96, 0.4); }
+        }
+        
+        .countdown-number {
+            background: linear-gradient(45deg, #ffffff, #f8f9fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: numberPulse 1s ease-in-out infinite;
+        }
+        
+        @keyframes numberPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+    </style>
+</head>
+<body class="romantic-bg min-h-screen flex items-center justify-center relative overflow-hidden">
+    <div class="floating-hearts" id="heartsContainer"></div>
+    
+    <div class="text-center z-10 px-6 max-w-4xl mx-auto">
+        <!-- Título Principal -->
+        <div class="mb-8">
+            <h1 class="text-6xl md:text-8xl font-bold text-white dramatic-text mb-4" style="font-family: 'Playfair Display', serif;">
+                Reencontro
+            </h1>
+            <div class="text-2xl md:text-3xl text-pink-200 mb-2" style="font-family: 'Dancing Script', cursive;">
+                Após 10 anos de saudade...
+            </div>
+            <div class="text-xl md:text-2xl text-white font-light">
+                <span class="text-pink-300 font-semibold">Aline</span> 
+                <span class="text-white mx-4">💕</span> 
+                <span class="text-pink-300 font-semibold">Fabio</span>
+            </div>
+        </div>
+
+        <!-- Contagem Regressiva -->
+        <div class="pulse-glow bg-black bg-opacity-30 backdrop-blur-sm rounded-3xl p-8 md:p-12 mb-8 border border-pink-300 border-opacity-30">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+                <div class="text-center">
+                    <div class="text-4xl md:text-6xl font-bold countdown-number mb-2" id="days">000</div>
+                    <div class="text-pink-200 text-sm md:text-base uppercase tracking-wider">Dias</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl md:text-6xl font-bold countdown-number mb-2" id="hours">00</div>
+                    <div class="text-pink-200 text-sm md:text-base uppercase tracking-wider">Horas</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl md:text-6xl font-bold countdown-number mb-2" id="minutes">00</div>
+                    <div class="text-pink-200 text-sm md:text-base uppercase tracking-wider">Minutos</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl md:text-6xl font-bold countdown-number mb-2" id="seconds">00</div>
+                    <div class="text-pink-200 text-sm md:text-base uppercase tracking-wider">Segundos</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data do Encontro -->
+        <div class="bg-gradient-to-r from-pink-500 to-red-500 rounded-2xl p-6 mb-8 transform hover:scale-105 transition-transform duration-300">
+            <div class="text-white text-xl md:text-2xl font-semibold mb-2">
+                Sábado, 23 de Agosto de 2025
+            </div>
+            <div class="text-pink-100 text-lg">
+                Um jantar que promete despertar toda a paixão guardada
+            </div>
+        </div>
+
+        <!-- Mensagem Romântica -->
+        <div class="text-center space-y-4">
+            <p class="text-white text-lg md:text-xl leading-relaxed" style="font-family: 'Dancing Script', cursive;">
+                "Dez anos se passaram, mas a paixão permanece viva..."
+            </p>
+            <p class="text-pink-200 text-base md:text-lg">
+                Uma década de saudade, carinho guardado e amizade que transcende o tempo.
+            </p>
+            <p class="text-white text-base md:text-lg font-light">
+                O destino os separou, mas agora os une novamente. ✨
+            </p>
+        </div>
+
+        <!-- Elementos Decorativos -->
+        <div class="mt-8 flex justify-center space-x-4 text-3xl">
+            <span class="animate-bounce">🌹</span>
+            <span class="animate-pulse">💫</span>
+            <span class="animate-bounce" style="animation-delay: 0.5s;">🌹</span>
+        </div>
+    </div>
+
+    <script>
+        // Data do encontro: 23 de agosto de 2025, 19:00
+        const targetDate = new Date('2025-08-23T19:00:00').getTime();
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById('days').textContent = days.toString().padStart(3, '0');
+            document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+            document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+            document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+
+            if (distance < 0) {
+                document.querySelector('.pulse-glow').innerHTML = `
+                    <div class="text-4xl md:text-6xl font-bold text-white mb-4">
+                        💕 O Momento Chegou! 💕
+                    </div>
+                    <div class="text-xl md:text-2xl text-pink-200">
+                        Que este reencontro seja mágico!
+                    </div>
+                `;
+            }
+        }
+
+        // Criar corações flutuantes
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'heart text-2xl';
+            heart.innerHTML = '💖';
+            heart.style.left = Math.random() * 100 + '%';
+            heart.style.animationDelay = Math.random() * 6 + 's';
+            heart.style.animationDuration = (Math.random() * 3 + 6) + 's';
+            
+            document.getElementById('heartsContainer').appendChild(heart);
+            
+            setTimeout(() => {
+                heart.remove();
+            }, 9000);
+        }
+
+        // Atualizar contagem regressiva a cada segundo
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        // Criar corações a cada 2 segundos
+        setInterval(createHeart, 2000);
+        
+        // Criar alguns corações iniciais
+        for(let i = 0; i < 5; i++) {
+            setTimeout(createHeart, i * 400);
+        }
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'971abcee503cf1ab',t:'MTc1NTYxNzkwNy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
