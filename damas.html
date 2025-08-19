@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo de Damas Online</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column; /* Organiza header, main e footer verticalmente */
+            color: white;
+        }
+
+        body.fullscreen {
+            padding: 0;
+        }
+        
+        /* Estilos do Cabeçalho */
+        .page-header {
+            padding: 15px 20px;
+            width: 100%;
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+        .page-header a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+        .page-header a:hover {
+            transform: scale(1.05);
+        }
+        .page-header img {
+            height: 40px;
+            margin-right: 15px;
+        }
+
+        /* Wrapper para o conteúdo principal (o jogo) */
+        .main-content-wrapper {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            padding: 20px;
+        }
+
+        .game-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 30px;
+            max-width: 600px;
+            width: 100%;
+            transition: all 0.3s ease;
+            color: #333; /* Cor do texto dentro do container do jogo */
+        }
+        
+        .hidden { display: none !important; }
+
+        .setup-screen h1, .online-screen h1 {
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 30px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .setup-form, .online-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .input-group {
+            text-align: left;
+            position: relative;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.2s ease;
+        }
+        
+        .copy-button {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .button, .start-button {
+            padding: 15px 30px;
+            background: linear-gradient(145deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .button:hover, .start-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+        
+        .button.secondary {
+             background: linear-gradient(145deg, #888, #666);
+        }
+
+        .game-screen {
+            display: none;
+            width: 100%;
+            height: 100%;
+        }
+
+        .game-header {
+            text-align: center;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .game-title {
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 10px;
+            font-weight: bold;
+            flex: 1;
+            text-align: center;
+        }
+
+        .fullscreen-toggle {
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.2s ease;
+        }
+
+        .fullscreen-toggle:hover {
+            background: #5a67d8;
+            transform: scale(1.05);
+        }
+
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .player-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .player-name {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .score-item {
+            text-align: center;
+        }
+
+        .score-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .board {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 2px;
+            background: #8B4513;
+            padding: 10px;
+            border-radius: 10px;
+            margin: 0 auto;
+            width: 100%;
+            max-width: 480px;
+            aspect-ratio: 1;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .board.disabled {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .square {
+            aspect-ratio: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .square.light { background: #F5DEB3; }
+        .square.dark { background: #8B4513; }
+        .square.playable { background: #654321; }
+        .square.selected {
+            background: #FFD700 !important;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+        }
+        .square.valid-move {
+            background: #90EE90 !important;
+            box-shadow: 0 0 8px rgba(144, 238, 144, 0.6);
+        }
+        .square.capture-move {
+            background: #FF6B6B !important;
+            box-shadow: 0 0 8px rgba(255, 107, 107, 0.6);
+        }
+
+        .piece {
+            width: 80%;
+            height: 80%;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            border: 3px solid rgba(255,255,255,0.3);
+        }
+        .piece:hover { transform: scale(1.1); }
+        .piece.red { background: linear-gradient(145deg, #ff4757, #c44569); color: white; }
+        .piece.black { background: linear-gradient(145deg, #2f3542, #1e2328); color: white; }
+        .piece.king::before { content: '♔'; font-size: 1.8rem; }
+
+        .reset-button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(145deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .reset-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+
+        .message {
+            text-align: center;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        .message.info { background: #e3f2fd; color: #1976d2; }
+        .message.warning { background: #fff3e0; color: #f57c00; }
+        .message.success { background: #e8f5e8; color: #388e3c; }
+
+        .game-body-wrapper {}
+
+        .game-sidebar {
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .game-container.fullscreen {
+            width: 100vw;
+            height: 100vh;
+            max-width: 100vw;
+            max-height: 100vh;
+            border-radius: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .game-container.fullscreen .game-screen {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .game-container.fullscreen .game-body-wrapper {
+            display: flex;
+            flex-direction: row;
+            flex-grow: 1;
+            gap: 30px;
+            align-items: center;
+            justify-content: center;
+            padding: 20px 0;
+            overflow: hidden;
+        }
+
+        .game-container.fullscreen .board {
+            height: 100%;
+            max-height: calc(100vh - 120px);
+            width: auto;
+            max-width: none;
+        }
+
+        .game-container.fullscreen .game-sidebar {
+            flex-basis: 320px;
+            height: 100%;
+            max-height: calc(100vh - 120px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 20px;
+            max-width: none;
+            margin: 0;
+        }
+        
+        .game-container.fullscreen .game-info {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 25px;
+        }
+
+        .game-container.fullscreen .current-player {
+            order: -1;
+        }
+        
+        .game-container.fullscreen .message {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Estilos do Rodapé */
+        .page-footer {
+            padding: 20px;
+            width: 100%;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+        .page-footer img {
+            height: 30px;
+            margin-bottom: 10px;
+            opacity: 0.8;
+        }
+        .page-footer p {
+            margin-bottom: 5px;
+        }
+        .page-footer .footer-links {
+            margin-top: 10px;
+        }
+        .page-footer .footer-links a {
+            color: white;
+            text-decoration: underline;
+            margin: 0 10px;
+            transition: color 0.2s;
+        }
+        .page-footer .footer-links a:hover {
+            color: #ddd;
+        }
+
+        @media (max-width: 768px) and (orientation: portrait) {
+             .game-container.fullscreen .game-body-wrapper {
+                flex-direction: column;
+                gap: 15px;
+             }
+             .game-container.fullscreen .board {
+                width: 100%;
+                height: auto;
+                max-height: none;
+             }
+             .game-container.fullscreen .game-sidebar {
+                height: auto;
+                flex-basis: auto;
+                width: 100%;
+             }
+        }
+
+        @media (max-width: 600px) {
+            .game-container { padding: 20px; }
+            .game-title { font-size: 2rem; }
+            .board { max-width: 100%; }
+            .piece { font-size: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+    <header class="page-header">
+        <a href="https://sou.net.br/digital" target="_blank">
+            <img src="https://i.ibb.co/zhSz3B6y/JN2-M3-ADIGITAL-H-2-removebg-preview.png" alt="Logo JN2M3A DIGITAL">
+            <span>JOGO DE DAMAS</span>
+        </a>
+    </header>
+
+    <main class="main-content-wrapper">
+        <div class="game-container" id="gameContainer">
+            <!-- Tela de Seleção de Modo -->
+            <div id="modeSelectionScreen">
+                 <div class="setup-form">
+                    <button class="button" onclick="showOnlineScreen()">🌎 Jogar Online</button>
+                    <button class="button secondary" onclick="showOfflineScreen()">💻 Jogar Offline</button>
+                 </div>
+            </div>
+
+            <!-- Tela de Configuração Offline -->
+            <div id="setupScreen" class="hidden">
+                <!-- O conteúdo aqui será gerado pelo JS -->
+            </div>
+            
+            <!-- Tela de Configuração Online -->
+            <div id="onlineScreen" class="hidden">
+                <h1>🌎 Jogo Online</h1>
+                <div class="online-form">
+                     <div class="input-group">
+                        <label for="onlinePlayerName">Seu Nome:</label>
+                        <input type="text" id="onlinePlayerName" placeholder="Digite seu nome" maxlength="20">
+                    </div>
+                    <button class="button" onclick="createOnlineGame()">➕ Criar Sala</button>
+                    <div class="input-group">
+                        <label for="gameIdInput">Código da Sala:</label>
+                        <input type="text" id="gameIdInput" placeholder="Cole o código da sala">
+                    </div>
+                    <button class="button" onclick="joinOnlineGame()">➡️ Entrar na Sala</button>
+                     <button class="button secondary" onclick="showModeSelection()">⬅️ Voltar</button>
+                </div>
+            </div>
+            
+             <!-- Tela de Espera Online -->
+            <div id="waitingScreen" class="hidden">
+                <h1>🌎 Aguardando Oponente</h1>
+                <div class="online-form">
+                    <p>Compartilhe o código da sala com seu amigo:</p>
+                    <div class="input-group">
+                        <input type="text" id="gameIdDisplay" readonly>
+                         <button class="copy-button" onclick="copyGameId()">Copiar</button>
+                    </div>
+                    <p id="waitingMessage">Aguardando o segundo jogador entrar...</p>
+                     <button class="button secondary" onclick="cancelOnlineGame()">⬅️ Cancelar</button>
+                </div>
+            </div>
+
+
+            <!-- Tela do Jogo -->
+            <div class="game-screen" id="gameScreen">
+                <div class="game-header">
+                    <h1 class="game-title">🏁 Jogo de Damas</h1>
+                    <button class="fullscreen-toggle" onclick="toggleFullscreen()" title="Maximizar/Minimizar">
+                        <span id="fullscreenIcon">⛶</span>
+                    </button>
+                </div>
+                
+                <div class="game-body-wrapper">
+                    <div class="board" id="board"></div>
+                    <div class="game-sidebar">
+                        <div class="game-info">
+                            <div class="player-info">
+                                <div class="player-name" id="player1Display">Jogador 1</div>
+                                <div class="score-item">
+                                    <div class="score-value" id="redScore">12</div>
+                                </div>
+                            </div>
+                            <div class="current-player" id="currentPlayer">Vez das Vermelhas</div>
+                            <div class="player-info">
+                                <div class="player-name" id="player2Display">Jogador 2</div>
+                                <div class="score-item">
+                                    <div class="score-value" id="blackScore">12</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="message info" id="message">Clique em uma peça vermelha para começar!</div>
+                        <button class="reset-button" onclick="showModeSelection()">🔄 Novo Jogo</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer class="page-footer">
+        <img src="https://i.ibb.co/zhSz3B6y/JN2-M3-ADIGITAL-H-2-removebg-preview.png" alt="Logo JN2M3A DIGITAL">
+        <p>Uma marca do Grupo Foto de Marca</p>
+        <p>WhatsApp (79) 99896-5081</p>
+        <p>© 2025 JN2M3A DIGITAL. Desenvolvendo soluções que facilitam o seu dia a dia.</p>
+        <div class="footer-links">
+            <a href="https://rec.sou.net.br/termo_de_uso.html" target="_blank">Termos de Uso</a> |
+            <a href="https://rec.sou.net.br/faq" target="_blank">Perguntas Frequentes</a>
+        </div>
+    </footer>
+
+    <!-- Scripts do Firebase -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, onSnapshot, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyD731pMC47er-o1mZ_gqIcuOQYtwWQmLQ4",
+            authDomain: "jogos-jn2m3a.firebaseapp.com",
+            projectId: "jogos-jn2m3a",
+            storageBucket: "jogos-jn2m3a.appspot.com",
+            messagingSenderId: "621933843493",
+            appId: "1:621933843493:web:e95808122b464090c35bcc",
+            measurementId: "G-17EPND6LV6"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        window.db = db;
+        window.auth = auth;
+        window.doc = doc;
+        window.setDoc = setDoc;
+        window.getDoc = getDoc;
+        window.onSnapshot = onSnapshot;
+        window.updateDoc = updateDoc;
+        window.deleteDoc = deleteDoc;
+        window.signInAnonymously = signInAnonymously;
+    </script>
+
+    <script>
+        class CheckersGame {
+            constructor(player1Name = 'Jogador 1', player2Name = 'Jogador 2', onlineMode = false, gameId = null, localPlayerColor = 'red') {
+                this.board = [];
+                this.currentPlayer = 'red';
+                this.selectedPiece = null;
+                this.validMoves = [];
+                this.mustCapture = false;
+                this.redPieces = 12;
+                this.blackPieces = 12;
+                this.player1Name = player1Name;
+                this.player2Name = player2Name;
+                this.isFullscreen = false;
+                this.gameOver = false;
+                
+                // Propriedades Online
+                this.onlineMode = onlineMode;
+                this.gameId = gameId;
+                this.localPlayerColor = localPlayerColor;
+                
+                if (!this.onlineMode) {
+                    this.initializeBoard();
+                    this.renderBoard();
+                    this.updateDisplay();
+                }
+            }
+            
+            initializeBoard() {
+                for (let r = 0; r < 8; r++) { this.board[r] = []; for (let c = 0; c < 8; c++) this.board[r][c] = null; }
+                for (let r = 0; r < 3; r++) { for (let c = 0; c < 8; c++) if ((r + c) % 2 === 1) this.board[r][c] = { color: 'black', king: false }; }
+                for (let r = 5; r < 8; r++) { for (let c = 0; c < 8; c++) if ((r + c) % 2 === 1) this.board[r][c] = { color: 'red', king: false }; }
+            }
+
+            renderBoard() {
+                const boardElement = document.getElementById('board');
+                boardElement.innerHTML = '';
+                boardElement.classList.toggle('disabled', this.gameOver || (this.onlineMode && this.currentPlayer !== this.localPlayerColor));
+
+                for (let row = 0; row < 8; row++) {
+                    for (let col = 0; col < 8; col++) {
+                        const square = document.createElement('div');
+                        square.className = 'square';
+                        square.dataset.row = row;
+                        square.dataset.col = col;
+                        if ((row + col) % 2 === 0) { square.classList.add('light'); } else { square.classList.add('dark', 'playable'); }
+                        const piece = this.board[row][col];
+                        if (piece) {
+                            const pieceElement = document.createElement('div');
+                            pieceElement.className = `piece ${piece.color}`;
+                            if (piece.king) pieceElement.classList.add('king');
+                            square.appendChild(pieceElement);
+                        }
+                        square.addEventListener('click', () => this.handleSquareClick(row, col));
+                        boardElement.appendChild(square);
+                    }
+                }
+                this.highlightValidMoves();
+            }
+
+            handleSquareClick(row, col) {
+                if (this.gameOver || (this.onlineMode && this.currentPlayer !== this.localPlayerColor)) return;
+                const piece = this.board[row][col];
+                if (piece && piece.color === this.currentPlayer) {
+                    this.selectPiece(row, col);
+                } else if (this.isValidMove(row, col)) {
+                    this.makeMove(this.selectedPiece.row, this.selectedPiece.col, row, col);
+                } else {
+                    this.deselectPiece();
+                }
+            }
+
+            selectPiece(row, col) {
+                this.deselectPiece();
+                if (this.mustCapture) {
+                    const captureMoves = this.getCaptureMoves(row, col);
+                    if (captureMoves.length === 0) { this.showMessage('Você deve escolher uma peça que pode capturar!', 'warning'); return; }
+                    this.selectedPiece = { row, col };
+                    this.validMoves = captureMoves;
+                } else {
+                    const moves = this.getPossibleMoves(row, col);
+                    if (moves.length === 0) { this.showMessage('Esta peça não pode se mover!', 'warning'); return; }
+                    this.selectedPiece = { row, col };
+                    this.validMoves = moves;
+                }
+                this.renderBoard();
+            }
+
+            deselectPiece() {
+                this.selectedPiece = null;
+                this.validMoves = [];
+                this.renderBoard();
+            }
+
+            isValidMove(row, col) {
+                return this.validMoves.some(move => move.row === row && move.col === col);
+            }
+
+            getPossibleMoves(row, col) {
+                const piece = this.board[row][col];
+                if (!piece) return [];
+                const captureMoves = this.getCaptureMoves(row, col);
+                if (captureMoves.length > 0) return captureMoves;
+                const moves = [];
+                if (piece.king) {
+                    const directions = [[-1, -1], [-1, 1], [1, -1], [1, 1]];
+                    for (const [dRow, dCol] of directions) {
+                        let distance = 1;
+                        while (true) {
+                            const newRow = row + dRow * distance, newCol = col + dCol * distance;
+                            if (!this.isValidPosition(newRow, newCol) || this.board[newRow][newCol]) break;
+                            moves.push({ row: newRow, col: newCol, capture: false });
+                            distance++;
+                        }
+                    }
+                } else {
+                    const directions = piece.color === 'red' ? [[-1, -1], [-1, 1]] : [[1, -1], [1, 1]];
+                    for (const [dRow, dCol] of directions) {
+                        const newRow = row + dRow, newCol = col + dCol;
+                        if (this.isValidPosition(newRow, newCol) && !this.board[newRow][newCol]) {
+                            moves.push({ row: newRow, col: newCol, capture: false });
+                        }
+                    }
+                }
+                return moves;
+            }
+
+            getCaptureMoves(row, col) {
+                const piece = this.board[row][col];
+                if (!piece) return [];
+                const captureMoves = [];
+                const directions = [[-1, -1], [-1, 1], [1, -1], [1, 1]];
+                for (const [dRow, dCol] of directions) {
+                    if (piece.king) {
+                        let distance = 1, enemyFound = false, enemyRow, enemyCol;
+                        while (true) {
+                            const checkRow = row + dRow * distance, checkCol = col + dCol * distance;
+                            if (!this.isValidPosition(checkRow, checkCol)) break;
+                            const checkPiece = this.board[checkRow][checkCol];
+                            if (checkPiece) {
+                                if (checkPiece.color !== piece.color && !enemyFound) {
+                                    enemyFound = true; enemyRow = checkRow; enemyCol = checkCol;
+                                } else break;
+                            } else if (enemyFound) {
+                                captureMoves.push({ row: checkRow, col: checkCol, capture: true, capturedRow: enemyRow, capturedCol: enemyCol });
+                            }
+                            distance++;
+                        }
+                    } else {
+                        const enemyRow = row + dRow, enemyCol = col + dCol;
+                        const landingRow = row + dRow * 2, landingCol = col + dCol * 2;
+                        if (this.isValidPosition(landingRow, landingCol) && this.board[enemyRow] && this.board[enemyRow][enemyCol] && this.board[enemyRow][enemyCol].color !== piece.color && !this.board[landingRow][landingCol]) {
+                            captureMoves.push({ row: landingRow, col: landingCol, capture: true, capturedRow: enemyRow, capturedCol: enemyCol });
+                        }
+                    }
+                }
+                return captureMoves;
+            }
+
+            isValidPosition(row, col) { return row >= 0 && row < 8 && col >= 0 && col < 8; }
+
+            async makeMove(fromRow, fromCol, toRow, toCol) {
+                if (this.gameOver) return;
+
+                const move = this.validMoves.find(m => m.row === toRow && m.col === toCol);
+                if (!move) return;
+                const piece = this.board[fromRow][fromCol];
+                this.board[toRow][toCol] = piece;
+                this.board[fromRow][fromCol] = null;
+                if (move.capture) {
+                    const capturedPiece = this.board[move.capturedRow][move.capturedCol];
+                    this.board[move.capturedRow][move.capturedCol] = null;
+                    if (capturedPiece.color === 'red') this.redPieces--; else this.blackPieces--;
+                }
+                let shouldCrown = (piece.color === 'red' && toRow === 0) || (piece.color === 'black' && toRow === 7);
+                if (move.capture) {
+                    const additionalCaptures = this.getCaptureMoves(toRow, toCol);
+                    if (additionalCaptures.length > 0) {
+                        shouldCrown = false;
+                        this.selectedPiece = { row: toRow, col: toCol };
+                        this.validMoves = additionalCaptures;
+                        this.renderBoard();
+                        this.showMessage(`Captura múltipla!`, 'warning');
+                        if (this.onlineMode) await this.updateFirebaseState();
+                        return;
+                    }
+                }
+                if (shouldCrown && !piece.king) {
+                    piece.king = true;
+                }
+                this.deselectPiece();
+                this.switchPlayer();
+                
+                const winner = this.checkGameEnd();
+                
+                if (this.onlineMode) {
+                    await this.updateFirebaseState(winner);
+                }
+            }
+
+            switchPlayer() {
+                this.currentPlayer = this.currentPlayer === 'red' ? 'black' : 'red';
+                this.checkMustCapture();
+                this.updateDisplay();
+            }
+
+            checkMustCapture() {
+                this.mustCapture = false;
+                for (let r = 0; r < 8; r++) for (let c = 0; c < 8; c++) if (this.board[r][c] && this.board[r][c].color === this.currentPlayer && this.getCaptureMoves(r, c).length > 0) { this.mustCapture = true; return; }
+            }
+
+            checkGameEnd() {
+                let winner = null;
+                let winnerName = null;
+                let reason = "";
+
+                if (this.redPieces === 0) {
+                    winner = 'black';
+                    winnerName = this.player2Name;
+                    reason = `(Pretas) venceu! Parabéns!`;
+                } else if (this.blackPieces === 0) {
+                    winner = 'red';
+                    winnerName = this.player1Name;
+                    reason = `(Vermelhas) venceu! Parabéns!`;
+                }
+
+                if (!winner) {
+                    let hasValidMoves = false;
+                    for (let r = 0; r < 8; r++) {
+                        for (let c = 0; c < 8; c++) {
+                            if (this.board[r][c] && this.board[r][c].color === this.currentPlayer && this.getPossibleMoves(r, c).length > 0) {
+                                hasValidMoves = true;
+                                break;
+                            }
+                        }
+                        if (hasValidMoves) break;
+                    }
+
+                    if (!hasValidMoves) {
+                        winner = this.currentPlayer === 'red' ? 'black' : 'red';
+                        winnerName = winner === 'red' ? this.player1Name : this.player2Name;
+                        reason = `venceu! Oponente sem movimentos.`;
+                    }
+                }
+
+                if (winner) {
+                    this.gameOver = true;
+                    this.showMessage(`🎉 ${winnerName} ${reason}`, 'success');
+                    document.getElementById('board').classList.add('disabled');
+                    return winner;
+                }
+                return null;
+            }
+
+            highlightValidMoves() {
+                if (!this.selectedPiece) return;
+                const selSquare = document.querySelector(`[data-row="${this.selectedPiece.row}"][data-col="${this.selectedPiece.col}"]`);
+                if (selSquare) selSquare.classList.add('selected');
+                this.validMoves.forEach(move => {
+                    const sq = document.querySelector(`[data-row="${move.row}"][data-col="${move.col}"]`);
+                    if (sq) sq.classList.add(move.capture ? 'capture-move' : 'valid-move');
+                });
+            }
+
+            updateDisplay() {
+                const cpn = this.currentPlayer === 'red' ? this.player1Name : this.player2Name;
+                document.getElementById('currentPlayer').textContent = `Vez de ${cpn}`;
+                document.getElementById('player1Display').textContent = this.player1Name;
+                document.getElementById('player2Display').textContent = this.player2Name;
+                document.getElementById('redScore').textContent = this.redPieces;
+                document.getElementById('blackScore').textContent = this.blackPieces;
+                
+                let messageText = `Vez de ${cpn}.`;
+                if (this.onlineMode) {
+                    if (this.currentPlayer === this.localPlayerColor) {
+                        messageText = "É a sua vez de jogar!";
+                    } else {
+                        messageText = `Aguardando a jogada de ${cpn}...`;
+                    }
+                }
+                if (this.mustCapture) {
+                    this.showMessage('Captura obrigatória!', 'warning');
+                } else {
+                    this.showMessage(messageText, 'info');
+                }
+            }
+
+            showMessage(text, type = 'info') {
+                const msgEl = document.getElementById('message');
+                msgEl.textContent = text;
+                msgEl.className = `message ${type}`;
+            }
+            
+            async updateFirebaseState(winner = null) {
+                if (!this.gameId) return;
+                const gameRef = window.doc(window.db, "games", this.gameId);
+                const gameState = {
+                    board: JSON.stringify(this.board),
+                    currentPlayer: this.currentPlayer,
+                    redPieces: this.redPieces,
+                    blackPieces: this.blackPieces,
+                    mustCapture: this.mustCapture,
+                    status: winner ? 'finished' : 'active',
+                    winner: winner || null
+                };
+                await window.updateDoc(gameRef, gameState);
+            }
+            
+            updateFromFirebase(gameData) {
+                this.board = JSON.parse(gameData.board);
+                this.currentPlayer = gameData.currentPlayer;
+                this.redPieces = gameData.redPieces;
+                this.blackPieces = gameData.blackPieces;
+                this.mustCapture = gameData.mustCapture;
+                this.player1Name = gameData.player1Name;
+                this.player2Name = gameData.player2Name || "Aguardando...";
+                
+                this.renderBoard();
+                
+                if (gameData.status === 'finished') {
+                    this.gameOver = true;
+                    this.checkGameEnd(); 
+                } else {
+                    this.gameOver = false;
+                    this.updateDisplay();
+                }
+            }
+        }
+
+        let game = null;
+        let activeGameListener = null; 
+        let currentOnlineGameId = null; 
+
+        async function getAuthenticatedUser() {
+            if (window.auth.currentUser) return window.auth.currentUser;
+            try {
+                const userCredential = await window.signInAnonymously(window.auth);
+                return userCredential.user;
+            } catch (error) {
+                console.error("Erro na autenticação anônima:", error);
+                alert("Falha na autenticação com o Firebase. Verifique se o método 'Anônimo' está ativado no painel de Autenticação do seu projeto Firebase e se a configuração está correta.");
+                return null;
+            }
+        }
+
+        function showScreen(screenId) {
+            ['modeSelectionScreen', 'setupScreen', 'onlineScreen', 'waitingScreen', 'gameScreen'].forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
+            document.getElementById(screenId).classList.remove('hidden');
+            if (screenId === 'gameScreen') {
+                 document.getElementById('gameScreen').style.display = 'flex';
+            } else {
+                 document.getElementById('gameScreen').style.display = 'none';
+            }
+        }
+
+        function showModeSelection() {
+            if (activeGameListener) {
+                activeGameListener(); 
+                activeGameListener = null;
+            }
+            game = null;
+            currentOnlineGameId = null;
+            showScreen('modeSelectionScreen');
+        }
+
+        function showOfflineScreen() { 
+            const offlineSetup = document.getElementById('setupScreen');
+            offlineSetup.innerHTML = `
+                <h1>💻 Jogo Offline</h1>
+                <div class="setup-form">
+                    <div class="input-group">
+                        <label for="player1Name">Nome do Jogador 1 (Vermelhas):</label>
+                        <input type="text" id="player1Name" placeholder="Jogador 1" maxlength="20">
+                    </div>
+                    <div class="input-group">
+                        <label for="player2Name">Nome do Jogador 2 (Pretas):</label>
+                        <input type="text" id="player2Name" placeholder="Jogador 2" maxlength="20">
+                    </div>
+                    <button class="start-button" onclick="startOfflineGame()">🎮 Iniciar Jogo</button>
+                    <button class="button secondary" onclick="showModeSelection()">⬅️ Voltar</button>
+                </div>
+            `;
+            showScreen('setupScreen'); 
+        }
+        function showOnlineScreen() { showScreen('onlineScreen'); }
+
+        function startOfflineGame() {
+            const player1Name = document.getElementById('player1Name').value.trim() || 'Jogador 1';
+            const player2Name = document.getElementById('player2Name').value.trim() || 'Jogador 2';
+            showScreen('gameScreen');
+            game = new CheckersGame(player1Name, player2Name);
+        }
+        
+        async function createOnlineGame() {
+            const playerName = document.getElementById('onlinePlayerName').value.trim();
+            if (!playerName) { alert("Por favor, digite seu nome."); return; }
+
+            const user = await getAuthenticatedUser();
+            if (!user) return;
+
+            const gameId = Math.random().toString(36).substr(2, 6).toUpperCase();
+            currentOnlineGameId = gameId; 
+            const gameRef = window.doc(window.db, "games", gameId);
+            
+            const newGame = new CheckersGame(playerName, "Aguardando...", true, gameId, 'red');
+            newGame.initializeBoard();
+
+            const gameData = {
+                board: JSON.stringify(newGame.board),
+                player1Name: playerName,
+                player1Id: user.uid,
+                player2Name: null,
+                player2Id: null,
+                currentPlayer: 'red',
+                redPieces: 12,
+                blackPieces: 12,
+                status: 'waiting',
+                mustCapture: false,
+                winner: null
+            };
+
+            await window.setDoc(gameRef, gameData);
+            
+            document.getElementById('gameIdDisplay').value = gameId;
+            showScreen('waitingScreen');
+            
+            listenToGameUpdates(gameId, 'red');
+        }
+
+        async function joinOnlineGame() {
+            const playerName = document.getElementById('onlinePlayerName').value.trim();
+            if (!playerName) { alert("Por favor, digite seu nome."); return; }
+            
+            const gameId = document.getElementById('gameIdInput').value.trim().toUpperCase();
+            if (!gameId) { alert("Por favor, digite o código da sala."); return; }
+
+            const user = await getAuthenticatedUser();
+            if (!user) return;
+
+            const gameRef = window.doc(window.db, "games", gameId);
+            const gameDoc = await window.getDoc(gameRef);
+
+            if (gameDoc.exists()) {
+                const gameData = gameDoc.data();
+                if (gameData.player1Id === user.uid) {
+                    alert("Você não pode entrar no seu próprio jogo.");
+                    return;
+                }
+                if (gameData.status === 'waiting') {
+                    await window.updateDoc(gameRef, {
+                        player2Name: playerName,
+                        player2Id: user.uid,
+                        status: 'active'
+                    });
+                    listenToGameUpdates(gameId, 'black');
+                } else {
+                    alert("Esta sala já está cheia!");
+                }
+            } else {
+                alert("Sala não encontrada!");
+            }
+        }
+        
+        function listenToGameUpdates(gameId, localPlayerColor) {
+            if (activeGameListener) activeGameListener(); 
+
+            const gameRef = window.doc(window.db, "games", gameId);
+            
+            activeGameListener = window.onSnapshot(gameRef, (doc) => {
+                const gameData = doc.data();
+                if (!gameData) {
+                    alert("O jogo foi encerrado ou cancelado.");
+                    showModeSelection();
+                    return;
+                }
+
+                if (gameData.status === 'active' && !game) {
+                    showScreen('gameScreen');
+                    game = new CheckersGame(gameData.player1Name, gameData.player2Name, true, gameId, localPlayerColor);
+                }
+
+                if (game) {
+                    game.updateFromFirebase(gameData);
+                }
+            });
+        }
+        
+        async function cancelOnlineGame() {
+            if (currentOnlineGameId) {
+                const gameRef = window.doc(window.db, "games", currentOnlineGameId);
+                await window.deleteDoc(gameRef); 
+            }
+            showModeSelection();
+        }
+
+        function copyGameId() {
+            const gameIdInput = document.getElementById('gameIdDisplay');
+            gameIdInput.select();
+            document.execCommand('copy');
+            alert("Código da sala copiado!");
+        }
+
+        function toggleFullscreen() {
+            if (!game) return;
+            const container = document.getElementById('gameContainer');
+            const icon = document.getElementById('fullscreenIcon');
+            document.body.classList.toggle('fullscreen');
+            container.classList.toggle('fullscreen');
+            game.isFullscreen = !game.isFullscreen;
+            icon.textContent = game.isFullscreen ? '🗗' : '⛶';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            showModeSelection();
+        });
+    </script>
+</body>
+</html>
