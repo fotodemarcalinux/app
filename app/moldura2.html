@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Moldura Festa net Brasil</title>
+    <link rel="icon" type="image/png" href="./img/favicon.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            box-sizing: border-box;
+        }
+        
+        .frame {
+            width: 1984px;
+            height: 130px;
+            transform: scale(0.5);
+            transform-origin: center;
+            margin: -65px 0;
+        }
+        
+        .frame-title {
+            font-size: 36px;
+            line-height: 1.1;
+        }
+        
+        .frame-subtitle {
+            font-size: 24px;
+            line-height: 1.2;
+        }
+        
+        .frame-date {
+            font-size: 20px;
+            line-height: 1.2;
+        }
+        
+        @media (max-width: 1200px) {
+            .frame {
+                transform: scale(0.4);
+                margin: -78px 0;
+            }
+        }
+        
+        @media (max-width: 800px) {
+            .frame {
+                transform: scale(0.3);
+                margin: -91px 0;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-5">
+    <div class="max-w-6xl mx-auto bg-white rounded-xl p-8 shadow-xl">
+        <div class="text-center mb-8">
+            <img src="./img/logo.webp" alt="Logo Festa net Brasil" class="mx-auto mb-4 h-16" onerror="this.style.display='none';">
+            <h1 class="text-gray-800 text-3xl font-bold mb-2">Gerador de Moldura Festa net Brasil</h1>
+            <p class="text-gray-600 text-lg">Gere sua moldura personalizada agora.</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <div class="flex flex-col">
+                <label for="titulo" class="font-semibold mb-2 text-gray-700 text-sm">Título *</label>
+                <input type="text" id="titulo" placeholder="Digite o título" value="Título Principal" 
+                       class="p-3 border-2 border-gray-200 rounded-lg text-base focus:outline-none focus:border-indigo-500 transition-colors">
+            </div>
+            
+            <div class="flex flex-col">
+                <label for="subtitulo" class="font-semibold mb-2 text-gray-700 text-sm">Subtítulo (opcional)</label>
+                <input type="text" id="subtitulo" placeholder="Digite o subtítulo"
+                       class="p-3 border-2 border-gray-200 rounded-lg text-base focus:outline-none focus:border-indigo-500 transition-colors">
+            </div>
+            
+            <div class="flex flex-col">
+                <label for="data" class="font-semibold mb-2 text-gray-700 text-sm">Data (opcional)</label>
+                <input type="text" id="data" placeholder="Digite a data"
+                       class="p-3 border-2 border-gray-200 rounded-lg text-base focus:outline-none focus:border-indigo-500 transition-colors">
+            </div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="flex flex-col">
+                <label for="logo" class="font-semibold mb-2 text-gray-700 text-sm">Logo (opcional)</label>
+                <input type="file" id="logo" accept="image/*" 
+                       class="p-3 border-2 border-gray-200 rounded-lg text-base focus:outline-none focus:border-indigo-500 transition-colors">
+            </div>
+            
+            <div class="flex flex-col">
+                <label for="cor" class="font-semibold mb-2 text-gray-700 text-sm">Cor de Fundo</label>
+                <input type="color" id="cor" value="#ffffff" 
+                       class="w-16 h-12 border-2 border-gray-200 rounded-lg cursor-pointer">
+            </div>
+            
+            <div class="flex flex-col">
+                <label for="corTexto" class="font-semibold mb-2 text-gray-700 text-sm">Cor dos Textos</label>
+                <input type="color" id="corTexto" value="#1a1a1a" 
+                       class="w-16 h-12 border-2 border-gray-200 rounded-lg cursor-pointer">
+            </div>
+            
+            <div class="flex flex-col">
+                <label class="font-semibold mb-2 text-gray-700 text-sm">Opções de Texto</label>
+                <div class="flex items-center">
+                    <input type="checkbox" id="maiuscula" class="mr-2 w-4 h-4 text-indigo-600 rounded focus:ring-indigo-500">
+                    <label for="maiuscula" class="text-gray-700 text-sm">Exibir em MAIÚSCULAS</label>
+                </div>
+            </div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="flex flex-col">
+                <label for="elemento" class="font-semibold mb-2 text-gray-700 text-sm">Elementos Decorativos</label>
+                <select id="elemento" class="p-3 border-2 border-gray-200 rounded-lg text-base focus:outline-none focus:border-indigo-500 transition-colors">
+                    <option value="">Nenhum</option>
+                    <option value="linhas">Linhas Diagonais</option>
+                    <option value="confetes">Confetes</option>
+                    <option value="estrelas">Estrelas</option>
+                    <option value="coracoes">Corações</option>
+                    <option value="baloes">Balões</option>
+                    <option value="notas">Notas Musicais</option>
+                    <option value="corporativo">Elementos Corporativos</option>
+                </select>
+            </div>
+            
+            <div class="flex flex-col">
+                <label for="corElemento" class="font-semibold mb-2 text-gray-700 text-sm">Cor dos Elementos</label>
+                <input type="color" id="corElemento" value="#e5e7eb" 
+                       class="w-16 h-12 border-2 border-gray-200 rounded-lg cursor-pointer">
+            </div>
+            
+            <div class="flex flex-col">
+                <label for="intensidade" class="font-semibold mb-2 text-gray-700 text-sm">Intensidade</label>
+                <select id="intensidade" class="p-3 border-2 border-gray-200 rounded-lg text-base focus:outline-none focus:border-indigo-500 transition-colors">
+                    <option value="baixa">Baixa</option>
+                    <option value="media" selected>Média</option>
+                    <option value="alta">Alta</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="flex justify-center my-8">
+            <div class="frame bg-white border border-gray-300 flex items-center pl-10 box-border relative overflow-hidden" id="moldura">
+                <div class="absolute inset-0 pointer-events-none" id="elementosContainer"></div>
+                <div class="flex-shrink-0 mr-6 relative z-10" id="logoContainer" style="display: none;">
+                    <div class="w-24 h-24 bg-gray-100 border-2 border-dashed border-gray-300 rounded flex items-center justify-center overflow-hidden">
+                        <img id="logoPreview" class="w-full h-full object-contain" style="display: none;">
+                        <span class="text-gray-400 text-xs text-center">Logo</span>
+                    </div>
+                </div>
+                <div class="flex flex-col justify-center relative z-10">
+                    <div class="frame-title font-bold text-gray-900 m-0" id="tituloFrame">Título Principal</div>
+                    <div class="frame-subtitle font-normal text-gray-600 mt-1 m-0" id="subtituloFrame" style="display: none;"></div>
+                    <div class="frame-date font-normal text-gray-500 mt-1 m-0" id="dataFrame" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-center">
+            <button onclick="baixarMoldura()" 
+                    class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg text-base transition-colors mt-5">
+                Baixar Moldura
+            </button>
+        </div>
+    </div>
+    
+    <footer class="bg-gray-800 text-white py-8 mt-12">
+        <div class="max-w-6xl mx-auto px-8 text-center">
+            <h3 class="text-xl font-bold mb-2">
+                <a href="https://digital.sou.net.br/" target="_blank" rel="noopener noreferrer" class="hover:text-indigo-400 transition-colors">
+                    JN2M3A DIGITAL
+                </a>
+            </h3>
+            <p class="text-gray-300 mb-2">Uma marca do Grupo Foto de Marca</p>
+            <p class="text-gray-300 mb-4">WhatsApp (79) 99896-5081</p>
+            <p class="text-gray-400 text-sm">© 2025 JN2M3A DIGITAL. Desenvolvendo soluções que facilitam o seu dia a dia.</p>
+        </div>
+    </footer>
+
+    <script>
+        const titulo = document.getElementById('titulo');
+        const subtitulo = document.getElementById('subtitulo');
+        const data = document.getElementById('data');
+        const cor = document.getElementById('cor');
+        const corTexto = document.getElementById('corTexto');
+        const maiuscula = document.getElementById('maiuscula');
+        const logo = document.getElementById('logo');
+        const elemento = document.getElementById('elemento');
+        const corElemento = document.getElementById('corElemento');
+        const intensidade = document.getElementById('intensidade');
+        const moldura = document.getElementById('moldura');
+        const tituloFrame = document.getElementById('tituloFrame');
+        const subtituloFrame = document.getElementById('subtituloFrame');
+        const dataFrame = document.getElementById('dataFrame');
+        const logoContainer = document.getElementById('logoContainer');
+        const logoPreview = document.getElementById('logoPreview');
+        const elementosContainer = document.getElementById('elementosContainer');
+        
+        let logoImage = null;
+
+        function criarElementosDecorativos() {
+            elementosContainer.innerHTML = '';
+            
+            const tipoElemento = elemento.value;
+            if (!tipoElemento) return;
+            
+            const cor = corElemento.value;
+            const nivel = intensidade.value;
+            
+            // Definir quantidade baseada na intensidade
+            let quantidade;
+            switch(nivel) {
+                case 'baixa': quantidade = 8; break;
+                case 'media': quantidade = 15; break;
+                case 'alta': quantidade = 25; break;
+            }
+            
+            // Criar elementos na diagonal direita (metade direita da moldura)
+            for (let i = 0; i < quantidade; i++) {
+                const elementoDiv = document.createElement('div');
+                elementoDiv.style.position = 'absolute';
+                elementoDiv.style.color = cor;
+                elementoDiv.style.opacity = '0.6';
+                elementoDiv.style.pointerEvents = 'none';
+                
+                // Posicionar na metade direita com tendência diagonal
+                const x = 50 + Math.random() * 45; // 50% a 95% da largura
+                const y = 10 + Math.random() * 80; // 10% a 90% da altura
+                elementoDiv.style.left = x + '%';
+                elementoDiv.style.top = y + '%';
+                
+                // Definir conteúdo baseado no tipo
+                switch(tipoElemento) {
+                    case 'linhas':
+                        elementoDiv.innerHTML = '╱';
+                        elementoDiv.style.fontSize = '24px';
+                        elementoDiv.style.transform = 'rotate(' + (Math.random() * 60 - 30) + 'deg)';
+                        break;
+                    case 'confetes':
+                        const confetes = ['▪', '▫', '◆', '◇', '●', '○'];
+                        elementoDiv.innerHTML = confetes[Math.floor(Math.random() * confetes.length)];
+                        elementoDiv.style.fontSize = '12px';
+                        break;
+                    case 'estrelas':
+                        const estrelas = ['★', '☆', '✦', '✧', '✩', '✪'];
+                        elementoDiv.innerHTML = estrelas[Math.floor(Math.random() * estrelas.length)];
+                        elementoDiv.style.fontSize = '16px';
+                        break;
+                    case 'coracoes':
+                        const coracoes = ['♥', '♡', '💖', '💝'];
+                        elementoDiv.innerHTML = coracoes[Math.floor(Math.random() * coracoes.length)];
+                        elementoDiv.style.fontSize = '14px';
+                        break;
+                    case 'baloes':
+                        const baloes = ['🎈', '🎉', '🎊', '🎁'];
+                        elementoDiv.innerHTML = baloes[Math.floor(Math.random() * baloes.length)];
+                        elementoDiv.style.fontSize = '16px';
+                        break;
+                    case 'notas':
+                        const notas = ['♪', '♫', '♬', '♩', '🎵', '🎶'];
+                        elementoDiv.innerHTML = notas[Math.floor(Math.random() * notas.length)];
+                        elementoDiv.style.fontSize = '16px';
+                        break;
+                    case 'corporativo':
+                        const corp = ['◆', '▲', '●', '■', '⬢', '⬡'];
+                        elementoDiv.innerHTML = corp[Math.floor(Math.random() * corp.length)];
+                        elementoDiv.style.fontSize = '12px';
+                        break;
+                }
+                
+                elementosContainer.appendChild(elementoDiv);
+            }
+        }
+
+        function atualizarMoldura() {
+            const usarMaiuscula = maiuscula.checked;
+            
+            // Atualizar título
+            const textoTitulo = titulo.value || 'Título Principal';
+            tituloFrame.textContent = usarMaiuscula ? textoTitulo.toUpperCase() : textoTitulo;
+            
+            // Atualizar cor de fundo
+            moldura.style.backgroundColor = cor.value;
+            
+            // Atualizar cor dos textos
+            tituloFrame.style.color = corTexto.value;
+            subtituloFrame.style.color = corTexto.value;
+            dataFrame.style.color = corTexto.value;
+            
+            // Verificar se subtítulo existe
+            const temSubtitulo = subtitulo.value.trim() !== '';
+            const temData = data.value.trim() !== '';
+            
+            if (temSubtitulo) {
+                const textoSubtitulo = subtitulo.value;
+                subtituloFrame.textContent = usarMaiuscula ? textoSubtitulo.toUpperCase() : textoSubtitulo;
+                subtituloFrame.style.display = 'block';
+            } else {
+                subtituloFrame.style.display = 'none';
+            }
+            
+            if (temData) {
+                const textoData = data.value;
+                dataFrame.textContent = usarMaiuscula ? textoData.toUpperCase() : textoData;
+                dataFrame.style.display = 'block';
+            } else {
+                dataFrame.style.display = 'none';
+            }
+            
+            // Ajustar posicionamento vertical baseado no conteúdo
+            if (!temSubtitulo && !temData) {
+                // Só título - centralizar
+                moldura.style.justifyContent = 'center';
+            } else if (temSubtitulo && temData) {
+                // Todos os elementos - distribuir
+                moldura.style.justifyContent = 'center';
+            } else {
+                // Dois elementos - ajustar como sanduíche
+                moldura.style.justifyContent = 'center';
+            }
+            
+            // Atualizar elementos decorativos
+            criarElementosDecorativos();
+        }
+
+        // Função para lidar com upload de logo
+        logo.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    logoImage = new Image();
+                    logoImage.onload = function() {
+                        logoPreview.src = e.target.result;
+                        logoPreview.style.display = 'block';
+                        logoContainer.style.display = 'block';
+                        logoContainer.querySelector('span').style.display = 'none';
+                        atualizarMoldura();
+                    };
+                    logoImage.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            } else {
+                logoContainer.style.display = 'none';
+                logoPreview.style.display = 'none';
+                logoImage = null;
+                atualizarMoldura();
+            }
+        });
+
+        // Event listeners
+        titulo.addEventListener('input', atualizarMoldura);
+        subtitulo.addEventListener('input', atualizarMoldura);
+        data.addEventListener('input', atualizarMoldura);
+        cor.addEventListener('input', atualizarMoldura);
+        corTexto.addEventListener('input', atualizarMoldura);
+        maiuscula.addEventListener('change', atualizarMoldura);
+        elemento.addEventListener('change', atualizarMoldura);
+        corElemento.addEventListener('input', atualizarMoldura);
+        intensidade.addEventListener('change', atualizarMoldura);
+
+        function baixarMoldura() {
+            // Criar canvas
+            const canvas = document.createElement('canvas');
+            canvas.width = 1984;
+            canvas.height = 130;
+            const ctx = canvas.getContext('2d');
+            
+            // Preencher fundo
+            ctx.fillStyle = cor.value;
+            ctx.fillRect(0, 0, 1984, 130);
+            
+            let xTexto = 40; // Posição inicial do texto
+            
+            // Desenhar logo se existir
+            if (logoImage) {
+                const logoSize = 96; // Tamanho do quadrado do logo
+                const logoX = 40;
+                const logoY = (130 - logoSize) / 2; // Centralizar verticalmente
+                
+                // Calcular dimensões mantendo proporção
+                const aspectRatio = logoImage.width / logoImage.height;
+                let drawWidth, drawHeight, drawX, drawY;
+                
+                if (aspectRatio > 1) {
+                    // Imagem mais larga
+                    drawWidth = logoSize;
+                    drawHeight = logoSize / aspectRatio;
+                } else {
+                    // Imagem mais alta ou quadrada
+                    drawHeight = logoSize;
+                    drawWidth = logoSize * aspectRatio;
+                }
+                
+                // Centralizar dentro do quadrado
+                drawX = logoX + (logoSize - drawWidth) / 2;
+                drawY = logoY + (logoSize - drawHeight) / 2;
+                
+                ctx.drawImage(logoImage, drawX, drawY, drawWidth, drawHeight);
+                
+                // Ajustar posição do texto
+                xTexto = logoX + logoSize + 24; // Logo + espaçamento
+            }
+            
+            // Configurar fonte
+            ctx.fillStyle = corTexto.value;
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'top';
+            
+            const usarMaiuscula = maiuscula.checked;
+            const temSubtitulo = subtitulo.value.trim() !== '';
+            const temData = data.value.trim() !== '';
+            
+            let yPosition = 40; // Posição inicial
+            
+            // Calcular posicionamento vertical
+            const totalElements = 1 + (temSubtitulo ? 1 : 0) + (temData ? 1 : 0);
+            if (totalElements === 1) {
+                yPosition = 47; // Centralizar título
+            } else if (totalElements === 2) {
+                yPosition = 35; // Ajuste para dois elementos
+            } else {
+                yPosition = 25; // Ajuste para três elementos
+            }
+            
+            // Desenhar título
+            ctx.font = 'bold 36px Inter, sans-serif';
+            const textoTitulo = titulo.value || 'Título Principal';
+            ctx.fillText(usarMaiuscula ? textoTitulo.toUpperCase() : textoTitulo, xTexto, yPosition);
+            yPosition += 40;
+            
+            // Desenhar subtítulo se existir
+            if (temSubtitulo) {
+                ctx.font = '400 24px Inter, sans-serif';
+                ctx.fillStyle = corTexto.value;
+                const textoSubtitulo = subtitulo.value;
+                ctx.fillText(usarMaiuscula ? textoSubtitulo.toUpperCase() : textoSubtitulo, xTexto, yPosition);
+                yPosition += 28;
+            }
+            
+            // Desenhar data se existir
+            if (temData) {
+                ctx.font = '400 20px Inter, sans-serif';
+                ctx.fillStyle = corTexto.value;
+                const textoData = data.value;
+                ctx.fillText(usarMaiuscula ? textoData.toUpperCase() : textoData, xTexto, yPosition);
+            }
+            
+            // Desenhar elementos decorativos
+            const tipoElemento = elemento.value;
+            if (tipoElemento) {
+                ctx.fillStyle = corElemento.value;
+                ctx.globalAlpha = 0.6;
+                
+                const nivel = intensidade.value;
+                let quantidade;
+                switch(nivel) {
+                    case 'baixa': quantidade = 8; break;
+                    case 'media': quantidade = 15; break;
+                    case 'alta': quantidade = 25; break;
+                }
+                
+                // Usar seed para posições consistentes
+                Math.seedrandom = function(seed) {
+                    const m = 0x80000000;
+                    const a = 1103515245;
+                    const c = 12345;
+                    let state = seed ? seed : Math.floor(Math.random() * (m - 1));
+                    return function() {
+                        state = (a * state + c) % m;
+                        return state / (m - 1);
+                    };
+                };
+                
+                const rng = Math.seedrandom(42); // Seed fixo para consistência
+                
+                for (let i = 0; i < quantidade; i++) {
+                    const x = 992 + rng() * 892; // Metade direita (50% a 95% de 1984px)
+                    const y = 13 + rng() * 104; // 10% a 90% de 130px
+                    
+                    ctx.font = '16px Arial, sans-serif';
+                    
+                    let simbolo = '';
+                    switch(tipoElemento) {
+                        case 'linhas':
+                            simbolo = '╱';
+                            ctx.font = '24px Arial, sans-serif';
+                            break;
+                        case 'confetes':
+                            const confetes = ['▪', '▫', '◆', '◇', '●', '○'];
+                            simbolo = confetes[Math.floor(rng() * confetes.length)];
+                            ctx.font = '12px Arial, sans-serif';
+                            break;
+                        case 'estrelas':
+                            const estrelas = ['★', '☆', '✦', '✧', '✩', '✪'];
+                            simbolo = estrelas[Math.floor(rng() * estrelas.length)];
+                            break;
+                        case 'coracoes':
+                            const coracoes = ['♥', '♡'];
+                            simbolo = coracoes[Math.floor(rng() * coracoes.length)];
+                            ctx.font = '14px Arial, sans-serif';
+                            break;
+                        case 'baloes':
+                            const baloes = ['●', '○', '◆', '◇'];
+                            simbolo = baloes[Math.floor(rng() * baloes.length)];
+                            break;
+                        case 'notas':
+                            const notas = ['♪', '♫', '♬', '♩'];
+                            simbolo = notas[Math.floor(rng() * notas.length)];
+                            break;
+                        case 'corporativo':
+                            const corp = ['◆', '▲', '●', '■'];
+                            simbolo = corp[Math.floor(rng() * corp.length)];
+                            ctx.font = '12px Arial, sans-serif';
+                            break;
+                    }
+                    
+                    ctx.fillText(simbolo, x, y);
+                }
+                
+                ctx.globalAlpha = 1.0; // Restaurar opacidade
+            }
+            
+            // Baixar imagem
+            const link = document.createElement('a');
+            link.download = 'moldura.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+
+        // Inicializar
+        atualizarMoldura();
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'986f383d93edf223',t:'MTc1OTE4ODExNi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
