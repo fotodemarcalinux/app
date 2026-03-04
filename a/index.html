@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Personalizador de Fotos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        * { box-sizing: border-box; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .view-wrapper { 
+            width: 100%; 
+            aspect-ratio: 1984/1100; 
+            background: #1e293b; 
+            border-radius: 12px; 
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+        }
+        #previewCanvas { 
+            width: 100% !important; 
+            height: auto !important; 
+            display: block;
+        }
+        .loader { 
+            border: 3px solid #f3f3f3; 
+            border-top: 3px solid #3b82f6; 
+            border-radius: 50%; 
+            width: 40px; 
+            height: 40px; 
+            animation: spin 1s linear infinite; 
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        
+        .upload-zone {
+            border: 2px dashed #cbd5e1;
+            transition: all 0.3s ease;
+        }
+        .upload-zone:hover, .upload-zone.has-files {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .status-badge {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-3xl mx-auto glass-panel rounded-3xl shadow-2xl overflow-hidden">
+        
+        <!-- Header -->
+        <header class="bg-slate-900 text-white p-6 text-center relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 opacity-50"></div>
+            <div class="relative z-10">
+                <h1 class="text-2xl md:text-3xl font-bold mb-2">✨ Personalizador de Fotos</h1>
+                <p class="text-sm text-slate-300">Adicione sua foto + moldura profissional</p>
+            </div>
+        </header>
+
+        <main class="p-6 md:p-8 space-y-6">
+            
+            <!-- Status dos Assets -->
+            <div id="statusPanel" class="grid grid-cols-2 gap-3">
+                <div id="statusNative" class="bg-slate-100 rounded-xl p-3 flex items-center space-x-3">
+                    <div class="loader !w-5 !h-5 !border-slate-300 !border-t-blue-500"></div>
+                    <div class="text-xs">
+                        <p class="font-bold text-slate-700">Marca Nativa</p>
+                        <p class="text-slate-500">Carregando...</p>
+                    </div>
+                </div>
+                <div id="statusMoldura" class="bg-slate-100 rounded-xl p-3 flex items-center space-x-3">
+                    <div class="loader !w-5 !h-5 !border-slate-300 !border-t-purple-500"></div>
+                    <div class="text-xs">
+                        <p class="font-bold text-slate-700">Moldura</p>
+                        <p class="text-slate-500">Carregando...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upload -->
+            <div class="space-y-3">
+                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Suas Fotos</label>
+                <label for="fileInput" class="upload-zone flex flex-col items-center justify-center p-8 rounded-2xl cursor-pointer bg-white">
+                    <i data-lucide="images" class="w-10 h-10 text-slate-400 mb-3"></i>
+                    <span id="fileLabel" class="text-sm font-bold text-slate-600">Clique para selecionar fotos</span>
+                    <span class="text-xs text-slate-400 mt-1">JPG, PNG, WEBP - Múltiplos arquivos permitidos</span>
+                    <input type="file" id="fileInput" class="hidden" accept="image/*" multiple>
+                </label>
+            </div>
+
+            <!-- Preview -->
+            <div id="previewSection" class="hidden space-y-3">
+                <div class="flex justify-between items-center">
+                    <span class="text-xs font-bold text-slate-500 uppercase">Preview</span>
+                    <span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-bold">Alta Qualidade</span>
+                </div>
+                <div class="view-wrapper flex items-center justify-center bg-slate-800">
+                    <canvas id="previewCanvas"></canvas>
+                </div>
+                <p class="text-xs text-slate-400 text-center">Esta é a prévia da primeira imagem. Todas serão processadas igualmente.</p>
+            </div>
+
+            <!-- Ação -->
+            <button id="processBtn" disabled class="btn-primary w-full text-white font-bold py-4 rounded-2xl flex items-center justify-center space-x-2 text-lg shadow-lg">
+                <i data-lucide="wand-2" class="w-6 h-6"></i>
+                <span>PROCESSAR TODAS AS FOTOS</span>
+            </button>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="bg-slate-50 p-4 text-center border-t border-slate-100">
+            <p class="text-xs text-slate-400">Arraste fotos → Processa automaticamente → Download em JPG</p>
+        </footer>
+    </div>
+
+    <!-- Modal Progresso -->
+    <div id="progressModal" class="fixed inset-0 bg-slate-900/90 hidden items-center justify-center p-4 z-50 backdrop-blur-sm">
+        <div class="bg-white rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl">
+            <div class="relative w-20 h-20 mx-auto mb-4">
+                <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                    <path class="text-slate-200" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3" />
+                    <path id="progressCircle" class="text-blue-500 transition-all duration-300" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3" />
+                </svg>
+                <div id="progressText" class="absolute inset-0 flex items-center justify-center font-bold text-lg">0%</div>
+            </div>
+            <h3 class="text-xl font-bold text-slate-800 mb-2">Processando...</h3>
+            <p id="progressDetail" class="text-sm text-slate-500">Foto 1 de 5</p>
+        </div>
+    </div>
+
+    <!-- Modal Sucesso -->
+    <div id="successModal" class="fixed inset-0 bg-slate-900/90 hidden items-center justify-center p-4 z-50 backdrop-blur-sm">
+        <div class="bg-white rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl transform scale-100 transition-transform">
+            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i data-lucide="check" class="w-8 h-8 text-green-600"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-slate-800 mb-2">Concluído! 🎉</h2>
+            <p class="text-slate-500 text-sm mb-6">Todas as fotos foram processadas e salvas.</p>
+            <button onclick="closeSuccess()" class="w-full py-3 bg-slate-900 text-white rounded-xl font-bold hover:bg-slate-800 transition-colors">
+                PROCESSAR MAIS FOTOS
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // CONFIGURAÇÃO - ARQUIVOS NA MESMA PASTA
+        // ==========================================
+        const ASSETS = {
+            NATIVE: './native.webp',      // Marca nativa na raiz
+            MOLDURA: './moldura.png'      // Moldura na raiz
+        };
+
+        // ==========================================
+        // ESTADO DA APLICAÇÃO
+        // ==========================================
+        const state = {
+            nativeImg: null,
+            molduraImg: null,
+            files: [],
+            isProcessing: false
+        };
+
+        // Elementos DOM
+        const els = {
+            fileInput: document.getElementById('fileInput'),
+            fileLabel: document.getElementById('fileLabel'),
+            previewSection: document.getElementById('previewSection'),
+            previewCanvas: document.getElementById('previewCanvas'),
+            processBtn: document.getElementById('processBtn'),
+            statusNative: document.getElementById('statusNative'),
+            statusMoldura: document.getElementById('statusMoldura'),
+            progressModal: document.getElementById('progressModal'),
+            progressCircle: document.getElementById('progressCircle'),
+            progressText: document.getElementById('progressText'),
+            progressDetail: document.getElementById('progressDetail'),
+            successModal: document.getElementById('successModal')
+        };
+
+        // ==========================================
+        // INICIALIZAÇÃO
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            init();
+        });
+
+        async function init() {
+            // Carrega assets em paralelo
+            await Promise.all([
+                loadAsset(ASSETS.NATIVE, 'native'),
+                loadAsset(ASSETS.MOLDURA, 'moldura')
+            ]);
+            
+            checkReady();
+        }
+
+        // ==========================================
+        // CARREGAR IMAGENS (SEM CORS - MESMA ORIGEM)
+        // ==========================================
+        function loadAsset(url, type) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                
+                img.onload = () => {
+                    if (type === 'native') state.nativeImg = img;
+                    else state.molduraImg = img;
+                    
+                    updateStatus(type, true, img);
+                    resolve(img);
+                };
+                
+                img.onerror = () => {
+                    updateStatus(type, false);
+                    reject(new Error(`Falha ao carregar ${url}`));
+                };
+                
+                // Adiciona timestamp para evitar cache
+                img.src = url + '?v=' + Date.now();
+            });
+        }
+
+        function updateStatus(type, success, img = null) {
+            const el = type === 'native' ? els.statusNative : els.statusMoldura;
+            const name = type === 'native' ? 'Marca Nativa' : 'Moldura';
+            const color = type === 'native' ? 'blue' : 'purple';
+            
+            if (success) {
+                el.className = `bg-${color}-50 rounded-xl p-3 flex items-center space-x-3 border border-${color}-200`;
+                el.innerHTML = `
+                    <i data-lucide="check-circle" class="w-5 h-5 text-${color}-500"></i>
+                    <div class="text-xs">
+                        <p class="font-bold text-${color}-700">${name}</p>
+                        <p class="text-${color}-600">${img.width}×${img.height}px</p>
+                    </div>
+                `;
+            } else {
+                el.className = 'bg-red-50 rounded-xl p-3 flex items-center space-x-3 border border-red-200';
+                el.innerHTML = `
+                    <i data-lucide="alert-circle" class="w-5 h-5 text-red-500"></i>
+                    <div class="text-xs">
+                        <p class="font-bold text-red-700">Erro no ${name}</p>
+                        <button onclick="location.reload()" class="text-red-600 underline">Recarregar</button>
+                    </div>
+                `;
+            }
+            lucide.createIcons();
+        }
+
+        // ==========================================
+        // UPLOAD DE ARQUIVOS
+        // ==========================================
+        els.fileInput.addEventListener('change', (e) => {
+            state.files = Array.from(e.target.files);
+            
+            if (state.files.length > 0) {
+                els.fileLabel.textContent = `${state.files.length} foto(s) selecionada(s)`;
+                els.fileLabel.parentElement.classList.add('has-files');
+                generatePreview();
+            } else {
+                els.fileLabel.textContent = 'Clique para selecionar fotos';
+                els.fileLabel.parentElement.classList.remove('has-files');
+                els.previewSection.classList.add('hidden');
+            }
+            
+            checkReady();
+        });
+
+        function checkReady() {
+            const ready = state.nativeImg && state.molduraImg && state.files.length > 0;
+            els.processBtn.disabled = !ready;
+        }
+
+        // ==========================================
+        // GERAR PREVIEW
+        // ==========================================
+        async function generatePreview() {
+            if (state.files.length === 0 || !state.molduraImg) return;
+            
+            els.previewSection.classList.remove('hidden');
+            
+            const canvas = els.previewCanvas;
+            const ctx = canvas.getContext('2d');
+            const W = 1984, H = 1100;
+            canvas.width = W;
+            canvas.height = H;
+            
+            // Carrega primeira imagem do usuário
+            const userImg = await loadUserImage(state.files[0]);
+            
+            // Desenha
+            drawComposite(ctx, userImg, W, H);
+        }
+
+        function loadUserImage(file) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = () => resolve(img);
+                img.src = URL.createObjectURL(file);
+            });
+        }
+
+        function drawComposite(ctx, userImg, W, H) {
+            // Limpa
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, W, H);
+            
+            // Foto do usuário (cover)
+            const scale = Math.max(W / userImg.width, H / userImg.height);
+            const nw = userImg.width * scale;
+            const nh = userImg.height * scale;
+            ctx.drawImage(userImg, (W - nw) / 2, (H - nh) / 2, nw, nh);
+            
+            // Moldura por cima
+            if (state.molduraImg) {
+                ctx.drawImage(state.molduraImg, 0, 0, W, H);
+            }
+            
+            // Marca nativa (se existir e quiser adicionar)
+            if (state.nativeImg) {
+                // Exemplo: canto inferior direito com 20% de opacidade
+                // ctx.globalAlpha = 0.2;
+                // ctx.drawImage(state.nativeImg, W - 200, H - 100, 180, 80);
+                // ctx.globalAlpha = 1.0;
+                
+                // Ou centralizada (como você preferir):
+                // ctx.drawImage(state.nativeImg, (W - state.nativeImg.width)/2, (H - state.nativeImg.height)/2);
+            }
+        }
+
+        // ==========================================
+        // PROCESSAMENTO EM LOTE
+        // ==========================================
+        els.processBtn.addEventListener('click', async () => {
+            if (state.isProcessing || state.files.length === 0) return;
+            
+            state.isProcessing = true;
+            els.processBtn.disabled = true;
+            showProgress();
+            
+            for (let i = 0; i < state.files.length; i++) {
+                updateProgress(i + 1, state.files.length);
+                
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const W = 1984, H = 1100;
+                canvas.width = W;
+                canvas.height = H;
+                
+                const userImg = await loadUserImage(state.files[i]);
+                drawComposite(ctx, userImg, W, H);
+                
+                // Download
+                await downloadCanvas(canvas, i);
+                
+                // Pequeno delay para não travar
+                await new Promise(r => setTimeout(r, 100));
+            }
+            
+            hideProgress();
+            showSuccess();
+            state.isProcessing = false;
+            els.processBtn.disabled = false;
+        });
+
+        async function downloadCanvas(canvas, index) {
+            return new Promise((resolve) => {
+                const link = document.createElement('a');
+                link.download = `Foto_${String(index + 1).padStart(2, '0')}_${Date.now()}.jpg`;
+                
+                // Qualidade 0.9 para bom equilíbrio tamanho/qualidade
+                // Mude para 0.38 se quiser compressão máxima (~100KB)
+                link.href = canvas.toDataURL('image/jpeg', 0.9);
+                
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                setTimeout(resolve, 50);
+            });
+        }
+
+        // ==========================================
+        // UI - MODAIS E PROGRESSO
+        // ==========================================
+        function showProgress() {
+            els.progressModal.classList.remove('hidden');
+            els.progressModal.classList.add('flex');
+            updateProgress(0, state.files.length);
+        }
+
+        function updateProgress(current, total) {
+            const percent = Math.round((current / total) * 100);
+            els.progressText.textContent = `${percent}%`;
+            els.progressDetail.textContent = `Foto ${current} de ${total}`;
+            els.progressCircle.setAttribute('stroke-dasharray', `${percent}, 100`);
+        }
+
+        function hideProgress() {
+            els.progressModal.classList.add('hidden');
+            els.progressModal.classList.remove('flex');
+        }
+
+        function showSuccess() {
+            els.successModal.classList.remove('hidden');
+            els.successModal.classList.add('flex');
+        }
+
+        function closeSuccess() {
+            els.successModal.classList.add('hidden');
+            els.successModal.classList.remove('flex');
+            
+            // Reset
+            state.files = [];
+            els.fileInput.value = '';
+            els.fileLabel.textContent = 'Clique para selecionar fotos';
+            els.fileLabel.parentElement.classList.remove('has-files');
+            els.previewSection.classList.add('hidden');
+            els.processBtn.disabled = true;
+        }
+
+        // Expõe função global para o botão do modal
+        window.closeSuccess = closeSuccess;
+    </script>
+</body>
+</html>
