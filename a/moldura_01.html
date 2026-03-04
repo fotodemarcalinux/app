@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Personalizador | Moldura 01</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* ... seus estilos ... */
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .view-wrapper {
+            width: 100%; aspect-ratio: 1984 / 1100; background-color: #1e293b;
+            border-radius: 12px; overflow: hidden; position: relative;
+            display: flex; align-items: center; justify-content: center;
+        }
+        #progressView canvas { width: 100% !important; height: auto !important; object-fit: contain; }
+        .loader { border: 3px solid #f3f3f3; border-top: 3px solid #3b82f6; 
+                  border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center p-4 md:p-10">
+
+    <div class="w-full max-w-2xl bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100">
+        
+        <header class="p-6 border-b flex flex-col items-center">
+            <h1 class="text-xl font-bold text-slate-800">Personalizador - Moldura 01</h1>
+            <p class="text-xs text-slate-400 uppercase tracking-widest mt-1">Moldura carregada automaticamente</p>
+        </header>
+
+        <main class="p-6 md:p-8 space-y-6">
+            
+            <!-- INFO: Moldura fixa -->
+            <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 flex items-center space-x-3">
+                <i data-lucide="lock" class="w-5 h-5 text-blue-500"></i>
+                <div>
+                    <p class="text-sm font-bold text-blue-800">Moldura pré-definida</p>
+                    <p class="text-xs text-blue-600">Esta página usa a moldura específica do evento</p>
+                </div>
+            </div>
+
+            <!-- Upload apenas das fotos -->
+            <div class="space-y-2">
+                <label class="text-xs font-bold text-slate-500 uppercase">1. Suas Fotos</label>
+                <label for="images" class="flex flex-col items-center justify-center p-6 border-2 border-dashed border-slate-300 rounded-2xl cursor-pointer hover:bg-slate-50 transition-colors h-32">
+                    <i data-lucide="image-plus" class="w-8 h-8 text-blue-500 mb-2"></i>
+                    <span id="imagesPreviewText" class="text-sm font-bold text-slate-600">Selecionar Fotos</span>
+                    <input type="file" id="images" class="hidden" accept="image/*" multiple>
+                </label>
+            </div>
+
+            <!-- Preview -->
+            <div id="previewArea" class="hidden space-y-3">
+                <div class="flex justify-between items-center">
+                    <span class="text-xs font-bold text-slate-500 uppercase">Preview</span>
+                    <span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded font-bold">~120 KB</span>
+                </div>
+                <div id="progressView" class="view-wrapper"></div>
+            </div>
+
+            <!-- Botão -->
+            <button id="convertButton" class="w-full bg-slate-900 hover:bg-black text-white font-bold py-4 rounded-2xl shadow-lg transition-all flex items-center justify-center space-x-2 disabled:bg-slate-300">
+                <i data-lucide="zap" class="w-5 h-5 text-yellow-400"></i>
+                <span>PROCESSAR E BAIXAR</span>
+            </button>
+
+        </main>
+    </div>
+
+    <!-- Modal Sucesso -->
+    <div id="successModal" class="fixed inset-0 bg-slate-900/80 hidden items-center justify-center p-4 z-50 backdrop-blur-sm">
+        <div class="bg-white rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl">
+            <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i data-lucide="check" class="w-10 h-10"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-slate-800">Concluído!</h2>
+            <p class="text-slate-500 mt-2 text-sm">Suas fotos foram processadas com sucesso.</p>
+            <button onclick="closeModal()" class="mt-6 w-full py-3 bg-slate-900 text-white rounded-2xl font-bold">FECHAR</button>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // CONFIGURAÇÃO ESPECÍFICA DESTA MOLDURA
+        // ============================================
+        const CONFIG = {
+            // URL da moldura no SEU SERVIDOR (CORS habilitado necessário)
+            MOLDURA_URL: 'https://nome.com/molduras/moldura_01.png',
+            
+            // URL da marca nativa (no GitHub Pages ou local)
+            MARCA_URL: './assets/native.webp',
+            
+            // Nome para o arquivo final
+            NOME_ARQUIVO: 'Moldura01'
+        };
+
+        // ============================================
+        // LÓGICA DA APLICAÇÃO
+        // ============================================
+        lucide.createIcons();
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            const imageInput = document.getElementById('images');
+            const progressView = document.getElementById('progressView');
+            const previewArea = document.getElementById('previewArea');
+            const imagesPreviewText = document.getElementById('imagesPreviewText');
+            const convertButton = document.getElementById('convertButton');
+            const successModal = document.getElementById('successModal');
+
+            let molduraCarregada = null;
+            let marcaCarregada = null;
+
+            const loadImage = (url, isExternal = false) => new Promise((resolve, reject) => {
+                const img = new Image();
+                // CRUCIAL para imagens externas (CORS)
+                if (isExternal || url.includes('http')) {
+                    img.crossOrigin = 'anonymous';
+                }
+                img.onload = () => resolve(img);
+                img.onerror = () => reject(new Error(`Falha ao carregar: ${url}`));
+                img.src = url;
+            });
+
+            // CARREGAR MOLDURA E MARCA AUTOMATICAMENTE
+            const carregarAssets = async () => {
+                convertButton.disabled = true;
+                convertButton.innerHTML = `<div class="loader !w-5 !h-5 !border-white !border-t-transparent mr-2"></div> Carregando moldura...`;
+
+                try {
+                    // Carrega ambos em paralelo
+                    [molduraCarregada, marcaCarregada] = await Promise.all([
+                        loadImage(CONFIG.MOLDURA_URL, true),
+                        loadImage(CONFIG.MARCA_URL)
+                    ]);
+                    
+                    convertButton.disabled = false;
+                    convertButton.innerHTML = `<i data-lucide="zap" class="w-5 h-5 text-yellow-400 mr-2"></i><span>PROCESSAR E BAIXAR</span>`;
+                    lucide.createIcons();
+                    
+                } catch (error) {
+                    console.error(error);
+                    alert('Erro ao carregar moldura. Verifique se o servidor permite CORS.');
+                    convertButton.innerHTML = `<span>ERRO AO CARREGAR</span>`;
+                }
+            };
+
+            await carregarAssets();
+
+            const processImage = (image) => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const targetWidth = 1984;
+                const targetHeight = 1100;
+                canvas.width = targetWidth;
+                canvas.height = targetHeight;
+
+                ctx.imageSmoothingEnabled = true;
+                ctx.imageSmoothingQuality = 'high';
+
+                // Redimensiona foto mantendo proporção (cover)
+                const imgRatio = image.width / image.height;
+                const targetRatio = targetWidth / targetHeight;
+                let newWidth, newHeight, x, y;
+
+                if (imgRatio > targetRatio) {
+                    newHeight = targetHeight;
+                    newWidth = image.width * (targetHeight / image.height);
+                    x = (targetWidth - newWidth) / 2;
+                    y = 0;
+                } else {
+                    newWidth = targetWidth;
+                    newHeight = image.height * (targetWidth / image.width);
+                    x = 0;
+                    y = (targetHeight - newHeight) / 2;
+                }
+
+                // Desenha foto
+                ctx.drawImage(image, x, y, newWidth, newHeight);
+
+                // Desenha moldura do servidor (sobreposta)
+                if (molduraCarregada) {
+                    ctx.drawImage(molduraCarregada, 0, 0, targetWidth, targetHeight);
+                }
+
+                // Desenha marca nativa (centro ou posição específica)
+                if (marcaCarregada) {
+                    const marcaWidth = marcaCarregada.width;
+                    const marcaHeight = marcaCarregada.height;
+                    ctx.drawImage(
+                        marcaCarregada, 
+                        (targetWidth - marcaWidth) / 2, 
+                        (targetHeight - marcaHeight) / 2
+                    );
+                }
+
+                return canvas;
+            };
+
+            const refreshPreview = async () => {
+                if (imageInput.files.length === 0 || !molduraCarregada) {
+                    previewArea.classList.add('hidden');
+                    return;
+                }
+
+                try {
+                    previewArea.classList.remove('hidden');
+                    progressView.innerHTML = '<div class="loader"></div>';
+                    
+                    const imgUrl = URL.createObjectURL(imageInput.files[0]);
+                    const img = await loadImage(imgUrl);
+                    const canvas = processImage(img);
+                    
+                    progressView.innerHTML = '';
+                    progressView.appendChild(canvas);
+                    URL.revokeObjectURL(imgUrl);
+                    
+                } catch (e) {
+                    progressView.innerHTML = '<p class="text-red-500 text-xs font-bold">ERRO NA IMAGEM</p>';
+                }
+            };
+
+            imageInput.addEventListener('change', () => {
+                const count = imageInput.files.length;
+                imagesPreviewText.textContent = count > 0 ? `${count} foto(s)` : 'Selecionar Fotos';
+                imagesPreviewText.classList.toggle('text-blue-600', count > 0);
+                refreshPreview();
+            });
+
+            convertButton.addEventListener('click', async () => {
+                if (!molduraCarregada || imageInput.files.length === 0) return;
+
+                convertButton.disabled = true;
+                const oldHTML = convertButton.innerHTML;
+                convertButton.innerHTML = `<div class="loader !w-5 !h-5 !border-white !border-t-transparent mr-2"></div> Processando...`;
+
+                try {
+                    const files = Array.from(imageInput.files);
+
+                    for (let i = 0; i < files.length; i++) {
+                        const fileUrl = URL.createObjectURL(files[i]);
+                        const img = await loadImage(fileUrl);
+                        const canvas = processImage(img);
+                        
+                        const link = document.createElement('a');
+                        link.href = canvas.toDataURL('image/jpeg', 0.38);
+                        link.download = `${CONFIG.NOME_ARQUIVO}_${Date.now()}_${i+1}.jpg`;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        
+                        URL.revokeObjectURL(fileUrl);
+                        await new Promise(r => setTimeout(r, 400)); // Delay entre downloads
+                    }
+                    
+                    successModal.classList.remove('hidden');
+                    successModal.classList.add('flex');
+                    
+                } catch (e) {
+                    alert('Erro ao processar imagens');
+                } finally {
+                    convertButton.disabled = false;
+                    convertButton.innerHTML = oldHTML;
+                }
+            });
+        });
+
+        function closeModal() {
+            const modal = document.getElementById('successModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+    </script>
+</body>
+</html>
