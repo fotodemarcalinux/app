@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Política de Privacidade - Cadastro de Parceiros</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: white;
+            padding: 2.5rem 2rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        .content {
+            padding: 2rem;
+        }
+
+        .highlight-box {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .highlight-box h2 {
+            color: #1e40af;
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .highlight-box p {
+            color: #1e40af;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .section {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .section-icon {
+            width: 32px;
+            height: 32px;
+            background: #3b82f6;
+            color: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .section-icon.green {
+            background: #10b981;
+        }
+
+        .section-icon.orange {
+            background: #f59e0b;
+        }
+
+        .section-icon.red {
+            background: #ef4444;
+        }
+
+        .section-icon.purple {
+            background: #8b5cf6;
+        }
+
+        .data-grid {
+            display: grid;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .data-item {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .data-item .icon {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+            border: 1px solid #e2e8f0;
+        }
+
+        .data-item h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.25rem;
+        }
+
+        .data-item p {
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+
+        .data-item .tag {
+            display: inline-block;
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .data-item .tag.sensitive {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        li {
+            padding: 0.6rem 0;
+            padding-left: 1.75rem;
+            position: relative;
+            font-size: 0.95rem;
+            color: #475569;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        li:last-child {
+            border-bottom: none;
+        }
+
+        li::before {
+            content: "•";
+            position: absolute;
+            left: 0.5rem;
+            color: #3b82f6;
+            font-weight: bold;
+            font-size: 1.2rem;
+            line-height: 1;
+        }
+
+        .security-box {
+            background: #f0fdf4;
+            border: 1px solid #86efac;
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin: 1.5rem 0;
+        }
+
+        .security-box strong {
+            color: #166534;
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .security-box p {
+            color: #166534;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .alert-box {
+            background: #fef3c7;
+            border: 1px solid #fcd34d;
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin: 1.5rem 0;
+        }
+
+        .alert-box strong {
+            color: #92400e;
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .alert-box p {
+            color: #92400e;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .legal-box {
+            background: #faf5ff;
+            border: 1px solid #d8b4fe;
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin: 1.5rem 0;
+        }
+
+        .legal-box strong {
+            color: #6b21a8;
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .legal-box p {
+            color: #6b21a8;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .footer {
+            background: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+            padding: 2rem;
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .partners {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        .contact {
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        .contact a {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .checkbox-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid #e2e8f0;
+            padding: 1.5rem;
+            box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .checkbox-wrapper {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .checkbox-wrapper input[type="checkbox"] {
+            width: 24px;
+            height: 24px;
+            margin-top: 2px;
+            accent-color: #3b82f6;
+            cursor: pointer;
+        }
+
+        .checkbox-wrapper label {
+            font-size: 0.95rem;
+            color: #1e293b;
+            cursor: pointer;
+            line-height: 1.5;
+        }
+
+        .checkbox-wrapper label strong {
+            color: #1e293b;
+        }
+
+        .content-spacer {
+            height: 100px;
+        }
+
+        .entity-list {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .entity-list h4 {
+            font-size: 0.9rem;
+            color: #64748b;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+        }
+
+        .entity-list ul {
+            margin: 0;
+        }
+
+        .entity-list li {
+            padding: 0.4rem 0;
+            padding-left: 1.5rem;
+            font-size: 0.9rem;
+            border: none;
+        }
+
+        .entity-list li::before {
+            content: "•";
+            color: #64748b;
+            font-size: 1rem;
+        }
+
+        @media (max-width: 640px) {
+            .content {
+                padding: 1.5rem;
+            }
+            
+            .header {
+                padding: 2rem 1.5rem;
+            }
+            
+            .header h1 {
+                font-size: 1.25rem;
+            }
+
+            .data-item {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <div class="header">
+            <h1>Política de Privacidade</h1>
+            <p>Lei Geral de Proteção de Dados (LGPD) - Cadastro de Parceiros</p>
+        </div>
+
+        <div class="content">
+
+            <div class="highlight-box">
+                <h2>🔒 Compromisso com sua Privacidade</h2>
+                <p>O <strong>Grupo mídiaTOTAL</strong>, <strong>Grupo Foto de Marca</strong> e suas respectivas marcas (MIXfotos, POPfotos, GALERA FEST) valorizam sua privacidade. Esta política explica quais dados coletamos, por que coletamos e como protegemos suas informações em conformidade com a Lei 13.709/2018 (LGPD).</p>
+            </div>
+
+            <!-- Quem Somos -->
+            <div class="section">
+                <div class="section-title">
+                    <div class="section-icon">🏢</div>
+                    <span>Quem Trata seus Dados</span>
+                </div>
+                <div class="entity-list">
+                    <h4>Responsáveis pelo tratamento:</h4>
+                    <ul>
+                        <li><strong>Grupo mídiaTOTAL</strong> (CNPJ: 12.075.294/0001-08)</li>
+                        <li><strong>Grupo Foto de Marca</strong></li>
+                        <li>Marcas: MIXfotos, POPfotos, GALERA FEST</li>
+                    </ul>
+                </div>
+                <p style="font-size: 0.9rem; color: #64748b; margin-top: 0.5rem;">
+                    <strong>Encarregado de Dados (DPO):</strong> Fábio - (79) 99896-5081
+                </p>
+            </div>
+
+            <!-- Dados Coletados -->
+            <div class="section">
+                <div class="section-title">
+                    <div class="section-icon orange">📋</div>
+                    <span>Dados que Coletamos</span>
+                </div>
+                <p style="margin-bottom: 1rem; color: #64748b; font-size: 0.9rem;">
+                    Durante o cadastro, solicitamos apenas informações essenciais para sua identificação e segurança:
+                </p>
+
+                <div class="data-grid">
+                    <div class="data-item">
+                        <div class="icon">👤</div>
+                        <div>
+                            <h4>Nome Completo</h4>
+                            <p>Identificação civil do parceiro</p>
+                            <span class="tag">Uso interno</span>
+                        </div>
+                    </div>
+
+                    <div class="data-item">
+                        <div class="icon">📱</div>
+                        <div>
+                            <h4>WhatsApp</h4>
+                            <p>Comunicação direta sobre serviços e suporte</p>
+                            <span class="tag">Contato operacional</span>
+                        </div>
+                    </div>
+
+                    <div class="data-item">
+                        <div class="icon">🆔</div>
+                        <div>
+                            <h4>CPF</h4>
+                            <p>Identificação fiscal e segurança jurídica</p>
+                            <span class="tag sensitive">Dado sensível - Uso restrito</span>
+                        </div>
+                    </div>
+
+                    <div class="data-item">
+                        <div class="icon">📍</div>
+                        <div>
+                            <h4>Endereço Completo</h4>
+                            <p>Comprovação de residência e correspondências oficiais</p>
+                            <span class="tag">Cadastro comercial</span>
+                        </div>
+                    </div>
+
+                    <div class="data-item">
+                        <div class="icon">🔑</div>
+                        <div>
+                            <h4>Login e Senha</h4>
+                            <p>Acesso criptografado à plataforma</p>
+                            <span class="tag sensitive">Dado sensível - Criptografado</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Finalidade -->
+            <div class="section">
+                <div class="section-title">
+                    <div class="section-icon green">🎯</div>
+                    <span>Por que Coletamos esses Dados?</span>
+                </div>
+                <ul>
+                    <li><strong>Identificação segura:</strong> Garantir que você é quem diz ser, protegendo sua conta contra fraudes</li>
+                    <li><strong>Prestação de serviços:</strong> Permitir acesso às ferramentas de processamento e publicação de fotos</li>
+                    <li><strong>Comunicação:</strong> Enviar atualizações, lembretes de créditos e suporte técnico</li>
+                    <li><strong>Segurança jurídica:</strong> Em caso de investigação policial ou judicial, fornecer dados às autoridades competentes</li>
+                    <li><strong>Proteção da plataforma:</strong> Prevenir usos indevidos, spam ou atividades ilícitas</li>
+                </ul>
+
+                <div class="security-box">
+                    <strong>🔐 Importante sobre seus dados sensíveis</strong>
+                    <p>Seu <strong>CPF</strong>, <strong>endereço</strong> e <strong>senha</strong> são considerados dados sensíveis e são armazenados com criptografia de ponta. Eles <strong>nunca serão vendidos, alugados ou compartilhados</strong> com terceiros para fins comerciais ou marketing.</p>
+                </div>
+            </div>
+
+            <!-- Não Compartilhamos -->
+            <div class="section">
+                <div class="section-title">
+                    <div class="section-icon red">🚫</div>
+                    <span>O que NUNCA fazemos com seus dados</span>
+                </div>
+                <ul>
+                    <li>Não vendemos seus dados para empresas de marketing</li>
+                    <li>Não compartilhamos seu CPF ou endereço com outros parceiros</li>
+                    <li>Não divulgamos sua senha (nem mesmo nossa equipe tem acesso a ela)</li>
+                    <li>Não enviamos spam ou propagandas não solicitadas</li>
+                    <li>Não utilizamos seus dados para perfilamento comercial abusivo</li>
+                </ul>
+            </div>
+
+            <!-- Quando Compartilhamos -->
+            <div class="section">
+                <div class="section-title">
+                    <div class="section-icon purple">⚖️</div>
+                    <span>Quando podemos divulgar seus dados</span>
+                </div>
+                <p style="margin-bottom: 1rem; color: #64748b; font-size: 0.9rem;">
+                    Apesar de nosso compromisso com a privacidade, existem situações excepcionais onde somos obrigados a fornecer informações:
+                </p>
+                <ul>
+                    <li><strong>Determinação judicial:</strong> Quando houver ordem expedida por autoridade competente</li>
+                    <li><strong>Investigação policial:</strong> Em casos de suspeita de crimes cibernéticos, pornografia infantil, violência ou outros ilícitos</li>
+                    <li><strong>Proteção de direitos:</strong> Para defender nossos direitos em processos judiciais</li>
+                    <li><strong>Consentimento expresso:</strong> Quando você autorizar explicitamente o compartilhamento</li>
+                </ul>
+
+                <div class="legal-box">
+                    <strong>⚠️ Atenção para atividades ilícitas</strong>
+                    <p>Se você utilizar nossa plataforma para praticar crimes (violência, abuso, pornografia infantil, discriminação, etc.), seus dados pessoais (incluindo CPF, endereço e logs de acesso) poderão ser fornecidos às autoridades policiais e judiciais para identificação e responsabilização civil e criminal.</p>
+                </div>
+            </div>
+
+            <!-- Segurança -->
+            <div class="section">
+                <div class="section-title">
+                    <div class="section-icon green">🛡️</div>
+                    <span>Como Protegemos suas Informações</span>
+                </div>
+                <ul>
+                    <li><strong>Criptografia:</strong> Senhas armazenadas com hash seguro (não acessível nem pela equipe)</li>
+                    <li><strong>Conexão segura:</strong> Certificado SSL em todas as páginas (https://)</li>
+                    <li><strong>Acesso restrito:</strong> Apenas funcionários autorizados têm acesso aos dados cadastrais</li>
+                    <li><strong>Logs de auditoria:</strong> Registramos acessos para detectar atividades suspeitas</li>
+                    <li><strong>Backup criptografado:</strong> Cópias de segurança protegidas contra vazamentos</li>
+                </ul>
+            </div>
+
+            <!-- Seus Direitos -->
+            <div class="section">
+                <div class="section-title">
+                    <div class="section-icon">✋</div>
+                    <span>Seus Direitos (LGPD)</span>
+                </div>
+                <p style="margin-bottom: 1rem; color: #64748b; font-size: 0.9rem;">
+                    Você tem total controle sobre seus dados e pode exercer os seguintes direitos a qualquer momento:
+                </p>
+                <ul>
+                    <li><strong>Acesso:</strong> Solicitar cópia de todos os dados que mantemos sobre você</li>
+                    <li><strong>Correção:</strong> Atualizar informações desatualizadas ou incorretas</li>
+                    <li><strong>Exclusão:</strong> Pedir a eliminação de seus dados (exceto quando houver obrigação legal de manutenção)</li>
+                    <li><strong>Portabilidade:</strong> Receber seus dados em formato eletrônico para levar a outro serviço</li>
+                    <li><strong>Revogação:</strong> Retirar seu consentimento a qualquer momento</li>
+                </ul>
+
+                <div class="alert-box">
+                    <strong>📧 Como exercer seus direitos</strong>
+                    <p>Envie um e-mail ou WhatsApp para <strong>(79) 99896-5081</strong> solicitando o direito desejado. Responderemos em até 15 dias úteis conforme a LGPD.</p>
+                </div>
+            </div>
+
+            <!-- Retenção -->
+            <div class="section">
+                <div class="section-title">
+                    <div class="section-icon orange">⏱️</div>
+                    <span>Por quanto tempo guardamos seus dados?</span>
+                </div>
+                <ul>
+                    <li><strong>Dados ativos:</strong> Enquanto sua conta estiver ativa e você utilizar nossos serviços</li>
+                    <li><strong>Após encerramento:</strong> Mantemos por 5 anos (prazo prescricional civil) para defesa em possíveis litígios</li>
+                    <li><strong>Dados de logs:</strong> Registros de acesso mantidos por 6 meses para segurança da plataforma</li>
+                    <li><strong>Exceção legal:</strong> Se houver determinação judicial ou investigação em andamento, os dados serão preservados pelo prazo necessário</li>
+                </ul>
+            </div>
+
+            <!-- Consentimento -->
+            <div class="section">
+                <div class="section-title">
+                    <div class="section-icon green">✓</div>
+                    <span>Consentimento Específico</span>
+                </div>
+                <p style="color: #64748b; font-size: 0.95rem; line-height: 1.7;">
+                    Ao marcar a caixa de aceite no formulário de cadastro, você declara que:
+                </p>
+                <ul style="margin-top: 0.5rem;">
+                    <li>Leu e entendeu esta Política de Privacidade</li>
+                    <li>Concorda com o tratamento dos dados listados acima para as finalidades descritas</li>
+                    <li>Está ciente de que dados sensíveis (CPF, endereço) serão armazenados para segurança jurídica</li>
+                    <li>Autoriza o compartilhamento com autoridades em casos de investigação de ilícitos</li>
+                    <li>Tem ciência de seus direitos como titular de dados</li>
+                </ul>
+            </div>
+
+            <div class="content-spacer"></div>
+
+        </div>
+
+        <div class="footer">
+            <div class="partners">
+                <span>Grupo mídiaTOTAL</span>
+                <span style="color: #cbd5e1;">×</span>
+                <span>Grupo Foto de Marca</span>
+            </div>
+            <div class="contact">
+                Dúvidas sobre privacidade? Fale com nosso DPO: <a href="https://wa.me/5579998965081">(79) 99896-5081</a>
+            </div>
+            <p style="margin-top: 1rem; font-size: 0.75rem; color: #94a3b8;">
+                Última atualização: Fevereiro de 2026
+            </p>
+        </div>
+
+    </div>
+
+    <!-- Checkbox Fixo -->
+    <div class="checkbox-container">
+        <div class="checkbox-wrapper">
+            <input type="checkbox" id="accept-lgpd" required>
+            <label for="accept-lgpd">
+                <strong>Li e aceito a Política de Privacidade (LGPD)</strong><br>
+                Autorizo o processamento dos meus dados pessoais (nome, CPF, endereço, WhatsApp e dados de acesso) para fins de cadastro, prestação de serviços e segurança jurídica. Estou ciente de que meus dados sensíveis não serão comercializados, mas poderão ser fornecidos às autoridades em caso de investigação de ilícitos.
+            </label>
+        </div>
+    </div>
+
+</body>
+</html>

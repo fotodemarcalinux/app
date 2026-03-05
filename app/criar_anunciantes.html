@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas Editor Pro - Multi Formatos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .canvas-wrapper {
+            position: relative;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        /* Formatos atualizados - todos com altura 260px */
+        .canvas-wrapper.format-260x260 { width: 260px; height: 260px; }
+        .canvas-wrapper.format-280x260 { width: 280px; height: 260px; }
+        .canvas-wrapper.format-304x260 { width: 304px; height: 260px; }
+        .canvas-wrapper.format-370x260 { width: 370px; height: 260px; }
+        .canvas-wrapper.format-412x260 { width: 412px; height: 260px; }
+        
+        .canvas-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+            background-color: white;
+        }
+        
+        .canvas-container.transparent-mode {
+            background-color: transparent;
+            background-image: 
+                linear-gradient(45deg, #e5e7eb 25%, transparent 25%), 
+                linear-gradient(-45deg, #e5e7eb 25%, transparent 25%), 
+                linear-gradient(45deg, transparent 75%, #e5e7eb 75%), 
+                linear-gradient(-45deg, transparent 75%, #e5e7eb 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+        }
+        
+        .canvas-item {
+            position: absolute;
+            cursor: move;
+            user-select: none;
+            touch-action: none;
+            transform-origin: center center;
+        }
+        
+        .canvas-item.selected {
+            outline: 2px solid #3b82f6;
+            outline-offset: 2px;
+        }
+        
+        .canvas-item img {
+            display: block;
+            pointer-events: none;
+            max-width: none;
+            max-height: none;
+        }
+        
+        .resize-handle {
+            width: 12px;
+            height: 12px;
+            background: #3b82f6;
+            position: absolute;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            z-index: 10;
+        }
+        
+        .resize-handle.nw { top: -6px; left: -6px; cursor: nw-resize; }
+        .resize-handle.ne { top: -6px; right: -6px; cursor: ne-resize; }
+        .resize-handle.sw { bottom: -6px; left: -6px; cursor: sw-resize; }
+        .resize-handle.se { bottom: -6px; right: -6px; cursor: se-resize; }
+        
+        .control-panel {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+        }
+        
+        .slider-thumb::-webkit-slider-thumb {
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #3b82f6;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        
+        .drop-zone {
+            transition: all 0.3s ease;
+            border: 2px dashed #d1d5db;
+        }
+        
+        .drop-zone:hover, .drop-zone.dragover {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { outline-color: #3b82f6; }
+            50% { outline-color: #60a5fa; }
+        }
+        
+        .canvas-item.selected {
+            animation: pulse 2s infinite;
+        }
+        
+        .btn-active {
+            background-color: #dbeafe;
+            border-color: #3b82f6;
+            color: #1e40af;
+        }
+        
+        .format-btn {
+            transition: all 0.2s ease;
+        }
+        
+        .format-btn.active {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            color: white;
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
+        
+        .dimensions-badge {
+            position: absolute;
+            top: -30px;
+            right: 0;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(4px);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        /* Grid de formatos atualizado */
+        .format-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+        
+        @media (max-width: 640px) {
+            .format-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+<base target="_blank">
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-8 text-white">
+            <h1 class="text-4xl font-bold mb-2">Festa Net Brasil Editor Pro</h1>
+            <p class="text-lg opacity-90">Edite e exporte em múltiplos formatos com transparência</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <!-- Left Panel - Controls -->
+            <div class="control-panel rounded-2xl shadow-2xl p-6 space-y-6 h-fit">
+                
+                <!-- Format Selector -->
+                <div class="space-y-3">
+                    <h3 class="font-semibold text-gray-800 flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"></path></svg>
+                        Formato do Canvas (Altura fixa: 260px)
+                    </h3>
+                    <div class="format-grid">
+                        <button onclick="setFormat('260x260')" id="btn-260x260" class="format-btn py-2 px-3 rounded-xl border-2 border-gray-200 font-medium text-xs flex flex-col items-center gap-1 hover:border-blue-400">
+                            <span class="text-lg">□</span>
+                            <span>260 x 260</span>
+                            <span class="text-[10px] opacity-60">14 anunciantes</span>
+                        </button>
+                        <button onclick="setFormat('280x260')" id="btn-280x260" class="format-btn py-2 px-3 rounded-xl border-2 border-gray-200 font-medium text-xs flex flex-col items-center gap-1 hover:border-blue-400">
+                            <span class="text-lg">▭</span>
+                            <span>280 x 260</span>
+                            <span class="text-[10px] opacity-60">13 anunciantes</span>
+                        </button>
+                        <button onclick="setFormat('304x260')" id="btn-304x260" class="format-btn py-2 px-3 rounded-xl border-2 border-gray-200 font-medium text-xs flex flex-col items-center gap-1 hover:border-blue-400">
+                            <span class="text-lg">▭</span>
+                            <span>304 x 260</span>
+                            <span class="text-[10px] opacity-60">12 anunciantes</span>
+                        </button>
+                        <button onclick="setFormat('370x260')" id="btn-370x260" class="format-btn py-2 px-3 rounded-xl border-2 border-gray-200 font-medium text-xs flex flex-col items-center gap-1 hover:border-blue-400">
+                            <span class="text-lg">▭</span>
+                            <span>370 x 260</span>
+                            <span class="text-[10px] opacity-60">10 anunciantes</span>
+                        </button>
+                        <button onclick="setFormat('412x260')" id="btn-412x260" class="format-btn py-2 px-3 rounded-xl border-2 border-gray-200 font-medium text-xs flex flex-col items-center gap-1 hover:border-blue-400 col-span-2">
+                            <span class="text-lg">▭</span>
+                            <span>412 x 260</span>
+                            <span class="text-[10px] opacity-60">9 anunciantes</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Upload Section -->
+                <div class="space-y-3">
+                    <h3 class="font-semibold text-gray-800 flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        Upload de Imagem
+                    </h3>
+                    <div class="drop-zone rounded-xl p-6 text-center cursor-pointer" id="dropZone">
+                        <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp,image/gif,image/bmp,image/tiff" class="hidden">
+                        <div class="text-gray-500">
+                            <svg class="w-12 h-12 mx-auto mb-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                            <p class="text-sm font-medium">Clique ou arraste imagens aqui</p>
+                            <p class="text-xs text-gray-400 mt-1">JPG, PNG, WebP, GIF, BMP, TIFF</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Background Options -->
+                <div class="space-y-3">
+                    <h3 class="font-semibold text-gray-800 flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path></svg>
+                        Fundo do Canvas
+                    </h3>
+                    <div class="flex gap-3">
+                        <button onclick="setBackground('white')" class="flex-1 py-2 px-4 rounded-lg border-2 transition-all font-medium text-sm flex items-center justify-center gap-2" id="btnWhite">
+                            <div class="w-4 h-4 bg-white border border-gray-300 rounded shadow-sm"></div>
+                            Branco
+                        </button>
+                        <button onclick="setBackground('transparent')" class="flex-1 py-2 px-4 rounded-lg border-2 transition-all font-medium text-sm flex items-center justify-center gap-2" id="btnTransparent">
+                            <div class="w-4 h-4 rounded shadow-sm" style="background: linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(-45deg, #ccc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(-45deg, transparent 75%, #ccc 75%); background-size: 6px 6px; background-position: 0 0, 0 3px, 3px -3px, -3px 0px; background-color: white;"></div>
+                            Transparente
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Selected Item Controls -->
+                <div id="controlsSection" class="space-y-4 opacity-50 pointer-events-none transition-opacity">
+                    <h3 class="font-semibold text-gray-800 flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+                        Editar Imagem
+                    </h3>
+                    
+                    <!-- Scale -->
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-sm text-gray-600">
+                            <span>Escala</span>
+                            <span id="scaleValue">100%</span>
+                        </div>
+                        <input type="range" id="scaleSlider" min="10" max="400" value="100" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-thumb">
+                    </div>
+
+                    <!-- Rotation -->
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-sm text-gray-600">
+                            <span>Rotação</span>
+                            <span id="rotateValue">0°</span>
+                        </div>
+                        <input type="range" id="rotateSlider" min="-180" max="180" value="0" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-thumb">
+                    </div>
+
+                    <!-- Opacity -->
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-sm text-gray-600">
+                            <span>Opacidade</span>
+                            <span id="opacityValue">100%</span>
+                        </div>
+                        <input type="range" id="opacitySlider" min="0" max="100" value="100" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-thumb">
+                    </div>
+
+                    <!-- Layer Controls -->
+                    <div class="flex gap-2 pt-2">
+                        <button onclick="bringToFront()" class="flex-1 py-2 px-3 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-medium text-gray-700 transition-colors text-xs">
+                            ↑ Frente
+                        </button>
+                        <button onclick="sendToBack()" class="flex-1 py-2 px-3 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-medium text-gray-700 transition-colors text-xs">
+                            ↓ Trás
+                        </button>
+                    </div>
+
+                    <!-- Alignment Grid -->
+                    <div class="grid grid-cols-3 gap-2 pt-2">
+                        <button onclick="alignItem('left')" class="py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-xs font-medium text-gray-700" title="Esquerda">←</button>
+                        <button onclick="alignItem('center-h')" class="py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-xs font-medium text-gray-700" title="Centro H">↔</button>
+                        <button onclick="alignItem('right')" class="py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-xs font-medium text-gray-700" title="Direita">→</button>
+                        <button onclick="alignItem('top')" class="py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-xs font-medium text-gray-700" title="Topo">↑</button>
+                        <button onclick="alignItem('center-v')" class="py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-xs font-medium text-gray-700" title="Centro V">↕</button>
+                        <button onclick="alignItem('bottom')" class="py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-xs font-medium text-gray-700" title="Base">↓</button>
+                    </div>
+
+                    <button onclick="deleteSelected()" class="w-full py-2 px-4 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 mt-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        Remover
+                    </button>
+                </div>
+
+                <!-- Global Actions -->
+                <div class="pt-4 border-t border-gray-200 space-y-3">
+                    <button onclick="clearCanvas()" class="w-full py-2 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-medium transition-colors">
+                        Limpar Tudo
+                    </button>
+                    
+                    <button onclick="downloadPNG()" class="w-full py-3 px-4 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-xl font-semibold shadow-lg transform hover:scale-[1.02] transition-all flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        Baixar PNG
+                    </button>
+                </div>
+            </div>
+
+            <!-- Center - Canvas Area -->
+            <div class="lg:col-span-2 flex flex-col items-center justify-center">
+                <div class="relative">
+                    <div class="dimensions-badge" id="dimensionsBadge">260 x 260</div>
+                    <div class="canvas-wrapper format-260x260" id="canvasWrapper">
+                        <div id="canvasContainer" class="canvas-container">
+                            <!-- Items will be added here -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Info -->
+                <div class="mt-6 text-white text-center space-y-1">
+                    <p class="text-sm opacity-90">Arraste para mover • Use as alças para redimensionar</p>
+                    <p class="text-xs opacity-75">A transparência será preservada no download PNG</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedItem = null;
+        let isDragging = false;
+        let isResizing = false;
+        let currentHandle = null;
+        let dragStartX, dragStartY, itemStartX, itemStartY;
+        let resizeStartX, resizeStartY, startWidth, startHeight, startLeft, startTop, startRotation;
+        let itemIdCounter = 0;
+        let backgroundMode = 'white';
+        let currentFormat = '260x260';
+        let originalImageData = new Map();
+
+        // Configurações dos formatos
+        const formatConfigs = {
+            '260x260': { width: 260, height: 260, label: '260 x 260', advertisers: '14 anunciantes' },
+            '280x260': { width: 280, height: 260, label: '280 x 260', advertisers: '13 anunciantes' },
+            '304x260': { width: 304, height: 260, label: '304 x 260', advertisers: '12 anunciantes' },
+            '370x260': { width: 370, height: 260, label: '370 x 260', advertisers: '10 anunciantes' },
+            '412x260': { width: 412, height: 260, label: '412 x 260', advertisers: '9 anunciantes' }
+        };
+
+        const canvasContainer = document.getElementById('canvasContainer');
+        const canvasWrapper = document.getElementById('canvasWrapper');
+        const controlsSection = document.getElementById('controlsSection');
+        const fileInput = document.getElementById('fileInput');
+        const dropZone = document.getElementById('dropZone');
+        const dimensionsBadge = document.getElementById('dimensionsBadge');
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            setBackground('white');
+            setFormat('260x260');
+        });
+
+        // Format Switching
+        function setFormat(format) {
+            currentFormat = format;
+            const config = formatConfigs[format];
+            
+            // Remove todas as classes de formato
+            Object.keys(formatConfigs).forEach(f => {
+                canvasWrapper.classList.remove(`format-${f}`);
+                document.getElementById(`btn-${f}`).classList.remove('active');
+            });
+            
+            // Adiciona classe do formato atual
+            canvasWrapper.classList.add(`format-${format}`);
+            document.getElementById(`btn-${format}`).classList.add('active');
+            
+            // Atualiza badge
+            dimensionsBadge.textContent = config.label;
+            
+            // Re-centraliza items quando muda de formato
+            const items = canvasContainer.querySelectorAll('.canvas-item');
+            items.forEach(item => {
+                const left = parseFloat(item.style.left);
+                const top = parseFloat(item.style.top);
+                
+                // Ajusta se estiver fora dos limites
+                if (left > config.width) item.style.left = (config.width / 2) + 'px';
+                if (top > config.height) item.style.top = (config.height / 2) + 'px';
+            });
+        }
+
+        // File Upload
+        dropZone.addEventListener('click', () => fileInput.click());
+        
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+        
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
+        
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) handleFile(files[0]);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) handleFile(e.target.files[0]);
+        });
+
+        function handleFile(file) {
+            const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/bmp', 'image/tiff'];
+            if (!validTypes.includes(file.type)) {
+                alert('Formato não suportado. Use: JPG, PNG, WebP, GIF, BMP ou TIFF');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                createImageItem(e.target.result);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function createImageItem(src) {
+            const id = `item-${itemIdCounter++}`;
+            const div = document.createElement('div');
+            div.id = id;
+            div.className = 'canvas-item';
+            
+            // Centro inicial baseado no formato atual
+            const config = formatConfigs[currentFormat];
+            const centerX = config.width / 2;
+            const centerY = config.height / 2;
+            
+            div.style.left = centerX + 'px';
+            div.style.top = centerY + 'px';
+            div.style.transform = 'translate(-50%, -50%)';
+            
+            const img = document.createElement('img');
+            img.src = src;
+            img.style.width = '150px';
+            img.style.height = 'auto';
+            img.draggable = false;
+            
+            // Armazena dimensões originais quando carregar
+            img.onload = () => {
+                originalImageData.set(id, {
+                    naturalWidth: img.naturalWidth,
+                    naturalHeight: img.naturalHeight,
+                    aspectRatio: img.naturalWidth / img.naturalHeight
+                });
+            };
+            
+            // Alças de redimensionamento
+            const handles = ['nw', 'ne', 'sw', 'se'];
+            handles.forEach(pos => {
+                const handle = document.createElement('div');
+                handle.className = `resize-handle ${pos}`;
+                handle.dataset.handle = pos;
+                div.appendChild(handle);
+            });
+            
+            div.appendChild(img);
+            canvasContainer.appendChild(div);
+            
+            setupItemEvents(div);
+            selectItem(div);
+        }
+
+        function setupItemEvents(item) {
+            // Mouse down no item (inicia drag)
+            item.addEventListener('mousedown', (e) => {
+                if (e.target.classList.contains('resize-handle')) {
+                    startResize(e, item);
+                    return;
+                }
+                
+                selectItem(item);
+                isDragging = true;
+                dragStartX = e.clientX;
+                dragStartY = e.clientY;
+                
+                // Pega posição atual
+                const rect = item.getBoundingClientRect();
+                const containerRect = canvasContainer.getBoundingClientRect();
+                itemStartX = rect.left - containerRect.left + rect.width / 2;
+                itemStartY = rect.top - containerRect.top + rect.height / 2;
+                
+                e.preventDefault();
+                e.stopPropagation();
+            });
+
+            // Alças de redimensionamento
+            const handles = item.querySelectorAll('.resize-handle');
+            handles.forEach(handle => {
+                handle.addEventListener('mousedown', (e) => {
+                    e.stopPropagation();
+                    startResize(e, item);
+                });
+            });
+        }
+
+        function startResize(e, item) {
+            isResizing = true;
+            currentHandle = e.target.dataset.handle;
+            
+            resizeStartX = e.clientX;
+            resizeStartY = e.clientY;
+            
+            const rect = item.getBoundingClientRect();
+            const img = item.querySelector('img');
+            
+            startWidth = parseFloat(img.style.width) || rect.width;
+            startHeight = parseFloat(img.style.height) || rect.height;
+            startLeft = parseFloat(item.style.left) || 0;
+            startTop = parseFloat(item.style.top) || 0;
+            
+            // Pega rotação atual
+            const transform = item.style.transform;
+            const rotateMatch = transform.match(/rotate\(([^)]+)deg\)/);
+            startRotation = rotateMatch ? parseFloat(rotateMatch[1]) : 0;
+        }
+
+        function selectItem(item) {
+            if (selectedItem && selectedItem !== item) {
+                selectedItem.classList.remove('selected');
+            }
+            
+            selectedItem = item;
+            item.classList.add('selected');
+            
+            // Habilita controles
+            controlsSection.classList.remove('opacity-50', 'pointer-events-none');
+            
+            // Atualiza sliders baseado no estado atual
+            const transform = item.style.transform;
+            const scaleMatch = transform.match(/scale\(([^)]+)\)/);
+            const rotateMatch = transform.match(/rotate\(([^)]+)deg\)/);
+            
+            const scale = scaleMatch ? parseFloat(scaleMatch[1]) : 1;
+            const rotate = rotateMatch ? parseFloat(rotateMatch[1]) : 0;
+            const opacity = parseFloat(item.style.opacity) || 1;
+            
+            document.getElementById('scaleSlider').value = Math.round(scale * 100);
+            document.getElementById('rotateSlider').value = Math.round(rotate);
+            document.getElementById('opacitySlider').value = Math.round(opacity * 100);
+            
+            updateControlValues();
+        }
+
+        function updateControlValues() {
+            document.getElementById('scaleValue').textContent = document.getElementById('scaleSlider').value + '%';
+            document.getElementById('rotateValue').textContent = document.getElementById('rotateSlider').value + '°';
+            document.getElementById('opacityValue').textContent = document.getElementById('opacitySlider').value + '%';
+        }
+
+        // Eventos globais do mouse
+        document.addEventListener('mousemove', (e) => {
+            if (!selectedItem) return;
+            
+            if (isDragging) {
+                const dx = e.clientX - dragStartX;
+                const dy = e.clientY - dragStartY;
+                
+                const newX = itemStartX + dx;
+                const newY = itemStartY + dy;
+                
+                selectedItem.style.left = newX + 'px';
+                selectedItem.style.top = newY + 'px';
+                
+            } else if (isResizing) {
+                const dx = e.clientX - resizeStartX;
+                const dy = e.clientY - resizeStartY;
+                
+                const img = selectedItem.querySelector('img');
+                const id = selectedItem.id;
+                const data = originalImageData.get(id);
+                const aspectRatio = data ? data.aspectRatio : (img.naturalWidth / img.naturalHeight);
+                
+                let newWidth = startWidth;
+                
+                // Calcula nova largura baseado na alça
+                if (currentHandle.includes('e')) {
+                    newWidth = startWidth + dx;
+                } else if (currentHandle.includes('w')) {
+                    newWidth = startWidth - dx;
+                } else {
+                    // Para north/south apenas, usa delta Y
+                    newWidth = startWidth + (dy * aspectRatio);
+                }
+                
+                // Garante tamanho mínimo
+                if (newWidth < 20) newWidth = 20;
+                
+                const newHeight = newWidth / aspectRatio;
+                
+                img.style.width = newWidth + 'px';
+                img.style.height = newHeight + 'px';
+                
+                // Ajusta posição para alças west/north para manter canto oposto fixo
+                if (currentHandle.includes('w')) {
+                    selectedItem.style.left = (startLeft - (newWidth - startWidth) / 2) + 'px';
+                }
+                if (currentHandle.includes('n')) {
+                    selectedItem.style.top = (startTop - (newHeight - startHeight) / 2) + 'px';
+                }
+            }
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+            isResizing = false;
+            currentHandle = null;
+        });
+
+        // Clique fora para desselecionar
+        canvasContainer.addEventListener('mousedown', (e) => {
+            if (e.target === canvasContainer) {
+                if (selectedItem) {
+                    selectedItem.classList.remove('selected');
+                    selectedItem = null;
+                    controlsSection.classList.add('opacity-50', 'pointer-events-none');
+                }
+            }
+        });
+
+        // Controles
+        document.getElementById('scaleSlider').addEventListener('input', (e) => {
+            if (!selectedItem) return;
+            updateTransform();
+            updateControlValues();
+        });
+
+        document.getElementById('rotateSlider').addEventListener('input', (e) => {
+            if (!selectedItem) return;
+            updateTransform();
+            updateControlValues();
+        });
+
+        document.getElementById('opacitySlider').addEventListener('input', (e) => {
+            if (!selectedItem) return;
+            selectedItem.style.opacity = e.target.value / 100;
+            updateControlValues();
+        });
+
+        function updateTransform() {
+            if (!selectedItem) return;
+            const scale = document.getElementById('scaleSlider').value / 100;
+            const rotate = document.getElementById('rotateSlider').value;
+            selectedItem.style.transform = `translate(-50%, -50%) scale(${scale}) rotate(${rotate}deg)`;
+        }
+
+        function setBackground(mode) {
+            backgroundMode = mode;
+            
+            const btnWhite = document.getElementById('btnWhite');
+            const btnTransparent = document.getElementById('btnTransparent');
+            
+            if (mode === 'white') {
+                canvasContainer.classList.remove('transparent-mode');
+                canvasContainer.style.backgroundColor = 'white';
+                btnWhite.classList.add('btn-active');
+                btnTransparent.classList.remove('btn-active');
+            } else {
+                canvasContainer.classList.add('transparent-mode');
+                canvasContainer.style.backgroundColor = 'transparent';
+                btnTransparent.classList.add('btn-active');
+                btnWhite.classList.remove('btn-active');
+            }
+        }
+
+        function bringToFront() {
+            if (!selectedItem) return;
+            canvasContainer.appendChild(selectedItem);
+        }
+
+        function sendToBack() {
+            if (!selectedItem) return;
+            if (canvasContainer.firstChild) {
+                canvasContainer.insertBefore(selectedItem, canvasContainer.firstChild);
+            }
+        }
+
+        function alignItem(position) {
+            if (!selectedItem) return;
+            
+            const config = formatConfigs[currentFormat];
+            const containerWidth = config.width;
+            const containerHeight = config.height;
+            const rect = selectedItem.getBoundingClientRect();
+            const img = selectedItem.querySelector('img');
+            
+            // Pega dimensões visuais atuais considerando escala
+            const transform = selectedItem.style.transform;
+            const scaleMatch = transform.match(/scale\(([^)]+)\)/);
+            const scale = scaleMatch ? parseFloat(scaleMatch[1]) : 1;
+            
+            const itemWidth = parseFloat(img.style.width) * scale;
+            const itemHeight = parseFloat(img.style.height) * scale;
+            
+            let left = parseFloat(selectedItem.style.left);
+            let top = parseFloat(selectedItem.style.top);
+            
+            switch(position) {
+                case 'left': 
+                    left = itemWidth / 2; 
+                    break;
+                case 'center-h': 
+                    left = containerWidth / 2; 
+                    break;
+                case 'right': 
+                    left = containerWidth - itemWidth / 2; 
+                    break;
+                case 'top': 
+                    top = itemHeight / 2; 
+                    break;
+                case 'center-v': 
+                    top = containerHeight / 2; 
+                    break;
+                case 'bottom': 
+                    top = containerHeight - itemHeight / 2; 
+                    break;
+            }
+            
+            selectedItem.style.left = left + 'px';
+            selectedItem.style.top = top + 'px';
+        }
+
+        function deleteSelected() {
+            if (!selectedItem) return;
+            originalImageData.delete(selectedItem.id);
+            selectedItem.remove();
+            selectedItem = null;
+            controlsSection.classList.add('opacity-50', 'pointer-events-none');
+        }
+
+        function clearCanvas() {
+            if (confirm('Limpar todo o canvas?')) {
+                canvasContainer.innerHTML = '';
+                originalImageData.clear();
+                selectedItem = null;
+                controlsSection.classList.add('opacity-50', 'pointer-events-none');
+            }
+        }
+
+        async function downloadPNG() {
+            // Cria canvas offscreen
+            const canvas = document.createElement('canvas');
+            const config = formatConfigs[currentFormat];
+            
+            canvas.width = config.width;
+            canvas.height = config.height;
+            const ctx = canvas.getContext('2d');
+            
+            // Limpa canvas completamente (transparente)
+            ctx.clearRect(0, 0, config.width, config.height);
+            
+            // Preenche branco apenas se fundo branco selecionado
+            if (backgroundMode === 'white') {
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, config.width, config.height);
+            }
+            
+            const items = Array.from(canvasContainer.querySelectorAll('.canvas-item'));
+            
+            if (items.length === 0) {
+                triggerDownload(canvas);
+                return;
+            }
+            
+            // Processa items em ordem (z-index)
+            let processed = 0;
+            
+            for (const item of items) {
+                await renderItemToCanvas(ctx, item);
+                processed++;
+                
+                if (processed === items.length) {
+                    triggerDownload(canvas);
+                }
+            }
+        }
+
+        function renderItemToCanvas(ctx, item) {
+            return new Promise((resolve) => {
+                const img = item.querySelector('img');
+                const src = img.src;
+                
+                // Cria nova imagem para evitar problemas CORS
+                const drawImg = new Image();
+                drawImg.crossOrigin = 'anonymous';
+                
+                drawImg.onload = () => {
+                    // Pega propriedades do item
+                    const left = parseFloat(item.style.left);
+                    const top = parseFloat(item.style.top);
+                    const opacity = parseFloat(item.style.opacity) || 1;
+                    
+                    const transform = item.style.transform;
+                    const scaleMatch = transform.match(/scale\(([^)]+)\)/);
+                    const rotateMatch = transform.match(/rotate\(([^)]+)deg\)/);
+                    const scale = scaleMatch ? parseFloat(scaleMatch[1]) : 1;
+                    const rotate = rotateMatch ? parseFloat(rotateMatch[1]) : 0;
+                    
+                    const width = parseFloat(img.style.width) * scale;
+                    const height = parseFloat(img.style.height) * scale;
+                    
+                    ctx.save();
+                    ctx.globalAlpha = opacity;
+                    
+                    // Translação para centro, rotação, depois desenha
+                    ctx.translate(left, top);
+                    ctx.rotate(rotate * Math.PI / 180);
+                    ctx.drawImage(drawImg, -width / 2, -height / 2, width, height);
+                    
+                    ctx.restore();
+                    resolve();
+                };
+                
+                drawImg.onerror = () => {
+                    console.error('Error loading image');
+                    resolve(); // Continua mesmo se falhar
+                };
+                
+                drawImg.src = src;
+            });
+        }
+
+        function triggerDownload(canvas) {
+            // Usa toBlob para melhor compatibilidade e garantir transparência
+            canvas.toBlob((blob) => {
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.download = `canvas-${currentFormat}-${Date.now()}.png`;
+                link.href = url;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+            }, 'image/png');
+        }
+    </script>
+</body>
+</html>

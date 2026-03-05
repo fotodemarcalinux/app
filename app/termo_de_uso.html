@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Política de Uso - Portal de Coberturas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            color: white;
+            padding: 2.5rem 2rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        .content {
+            padding: 2rem;
+        }
+
+        .intro {
+            background: #f1f5f9;
+            border-left: 4px solid #3b82f6;
+            padding: 1.25rem;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+            color: #475569;
+        }
+
+        .section {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .section-icon {
+            width: 32px;
+            height: 32px;
+            background: #3b82f6;
+            color: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .section-icon.red {
+            background: #ef4444;
+        }
+
+        .section-icon.green {
+            background: #10b981;
+        }
+
+        .section-icon.orange {
+            background: #f59e0b;
+        }
+
+        .section-icon.purple {
+            background: #8b5cf6;
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        li {
+            padding: 0.6rem 0;
+            padding-left: 1.75rem;
+            position: relative;
+            font-size: 0.95rem;
+            color: #475569;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        li:last-child {
+            border-bottom: none;
+        }
+
+        li::before {
+            content: "•";
+            position: absolute;
+            left: 0.5rem;
+            color: #3b82f6;
+            font-weight: bold;
+            font-size: 1.2rem;
+            line-height: 1;
+        }
+
+        .prohibited li::before {
+            content: "✕";
+            color: #ef4444;
+            font-size: 0.9rem;
+        }
+
+        .allowed li::before {
+            content: "✓";
+            color: #10b981;
+            font-size: 0.9rem;
+        }
+
+        .warning-box {
+            background: #fef3c7;
+            border: 1px solid #fcd34d;
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin: 1.5rem 0;
+        }
+
+        .warning-box strong {
+            color: #92400e;
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .warning-box p {
+            color: #92400e;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .alert-box {
+            background: #fee2e2;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin: 1.5rem 0;
+        }
+
+        .alert-box strong {
+            color: #991b1b;
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .alert-box p {
+            color: #991b1b;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .info-box {
+            background: #dbeafe;
+            border: 1px solid #93c5fd;
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin: 1.5rem 0;
+        }
+
+        .info-box strong {
+            color: #1e40af;
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .info-box p {
+            color: #1e40af;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .footer {
+            background: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+            padding: 2rem;
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .partners {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        .contact {
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        .contact a {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .checkbox-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid #e2e8f0;
+            padding: 1.5rem;
+            box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .checkbox-wrapper {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .checkbox-wrapper input[type="checkbox"] {
+            width: 24px;
+            height: 24px;
+            margin-top: 2px;
+            accent-color: #3b82f6;
+            cursor: pointer;
+        }
+
+        .checkbox-wrapper label {
+            font-size: 0.95rem;
+            color: #1e293b;
+            cursor: pointer;
+            line-height: 1.5;
+        }
+
+        .checkbox-wrapper label strong {
+            color: #1e293b;
+        }
+
+        .content-spacer {
+            height: 100px;
+        }
+
+        @media (max-width: 640px) {
+            .content {
+                padding: 1.5rem;
+            }
+            
+            .header {
+                padding: 2rem 1.5rem;
+            }
+            
+            .header h1 {
+                font-size: 1.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <div class="header">
+            <h1>Política de Uso para Parceiros</h1>
+            <p>Termos de responsabilidade e conduta no Portal de Coberturas</p>
+        </div>
+
+        <div class="content">
+
+            <div class="intro">
+                Ao cadastrar-se como parceiro do Portal de Coberturas Fotográficas, você concorda em seguir rigorosamente estas diretrizes. O descumprimento resultará na suspensão imediata da conta e possíveis medidas legais.
+            </div>
+
+            <!-- Proibições -->
+            <div class="section">
+                <div class="section-title">
+                    <div class="section-icon red">✕</div>
+                    <span>Conteúdo Expressamente Proibido</span>
+                </div>
+                <p style="margin-bottom: 1rem; color: #64748b; font-size: 0.9rem;">É terminantemente vedado publicar, processar ou armazenar qualquer material que contenha:</p>
+                <ul class="prohibited">
+                    <li><strong>Cenas de violência explícita</strong> – brigas, agressões, acidentes com sangue ou ferimentos expostos</li>
+                    <li><strong>Conteúdo sexual ou íntimo não consentido</strong> – imagens de nudez, exposição de partes íntimas ou situações de constrangimento</li>
+                    <li><strong>Abuso ou exploração de vulneráveis</strong> – crianças em situações inadequadas, idosos expostos de forma vexatória, pessoas em situação de rua sem consentimento</li>
+                    <li><strong>Atos ilícitos ou criminosos</strong> – uso de drogas, vandalismo, furtos, desordem pública ou apologia ao crime</li>
+                    <li><strong>Discriminação ou ódio</strong> – conteúdo racista, homofóbico, misógino, xenofóbico ou que incite violência contra grupos específicos</li>
+                    <li><strong>Material falso ou enganoso</strong> – montagens para difamar, notícias falsas (fake news) ou desinformação</li>
+                    <li><strong>Violação de privacidade</strong> – fotos de pessoas em momentos íntimos, banheiros, vestiários ou locais privados sem autorização</li>
+                    <li><strong>Direitos autorais de terceiros</strong> – uso de logomarcas, personagens ou obras protegidas sem permissão</li>
+                </ul>
+
+                <div class="alert-box">
+                    <strong>⚠️ Consequências Imediatas</strong>
+                    <p>A publicação de qualquer conteúdo acima resultará no <strong>banimento permanente</strong> da plataforma, <strong>perda de todos os créditos</strong> e <strong>notificação às autoridades competentes</strong> quando aplicável. Não haverá reembolso.</p>
+                </div>
+            </div>
+
+            <!-- Obrigações -->
+            <div class="section">
+                <div class="section-title">
+                    <div class="section-icon orange">★</div>
+                    <span>Suas Responsabilidades como Parceiro</span>
+                </div>
+                <ul>
+                    <li><strong>Consentimento explícito:</strong> Certifique-se de que todas as pessoas fotografadas consentiram com a divulgação da imagem em eventos públicos</li>
+                    <li><strong>Verificação de idade:</strong> Em eventos com menores de idade, confirme autorização dos responsáveis legais</li>
+                    <li><strong>Moderação ativa:</strong> Revise todas as fotos antes de aprovar na galeria pública</li>
+                    <li><strong>Dados verdadeiros:</strong> Mantenha seu cadastro atualizado com informações corretas de contato</li>
+                    <li><strong>Segurança da conta:</strong> Não compartilhe suas credenciais de acesso</li>
+                    <li><strong>Backup local:</strong> Guarde cópias das fotos originais em seu equipamento</li>
+                </ul>
+            </div>
+
+            <!-- Permissões -->
+            <div class="section">
+                <div class="section-title">
+                    <div class="section-icon green">✓</div>
+                    <span>O Que Você Pode Fazer</span>
+                </div>
+                <ul class="allowed">
+                    <li>Cobertura fotográfica de eventos sociais, corporativos e culturais</li>
+                    <li>Personalização de fotos com molduras promocionais do evento</li>
+                    <li>Compartilhamento de galerias via links públicos</li>
+                    <li>Uso das fotos para portfólio próprio (com crédito ao sistema)</li>
+                    <li>Processamento em massa de imagens para agilizar entrega</li>
+                </ul>
+            </div>
+
+            <!-- Direitos -->
+            <div class="section">
+                <div class="section-title">
+                    <div class="section-icon purple">©</div>
+                    <span>Direitos e Licenciamento</span>
+                </div>
+                <ul>
+                    <li>Você mantém os direitos autorais das fotos que produzir</li>
+                    <li>O Grupo mídiaTOTAL possui licença para usar imagens de divulgação em portfólio e redes sociais</li>
+                    <li>O sistema aplica marca d'água digital que não pode ser removida</li>
+                    <li>O uso comercial das fotos pelo parceiro é livre, desde que respeitadas as proibições acima</li>
+                </ul>
+
+                <div class="info-box">
+                    <strong>ℹ️ Solicitação de Remoção</strong>
+                    <p>Se o titular de uma imagem solicitar remoção (direito ao esquecimento - LGPD), você deve atender em até 48 horas e notificar o administrador do sistema.</p>
+                </div>
+            </div>
+
+            <!-- Uso Ético -->
+            <div class="section">
+                <div class="section-title">
+                    <div class="section-icon" style="background: #ec4899;">♥</div>
+                    <span>Conduta Ética Recomendada</span>
+                </div>
+                <ul>
+                    <li>Respeite o direito à imagem de pessoas em situação de vulnerabilidade</li>
+                    <li>Evite publicar fotos constrangedoras, mesmo que tecnicamente permitidas</li>
+                    <li>Não fotografe pessoas em momentos de luto ou dor evidente</li>
+                    <li>Priorize o bem-estar dos fotografados sobre o impacto viral da imagem</li>
+                    <li>Em caso de dúvida sobre uma foto, prefira não publicar</li>
+                </ul>
+
+                <div class="warning-box">
+                    <strong>⚡ Neutridade Política</strong>
+                    <p>O sistema não pode ser usado para campanhas políticas, propaganda partidária ou manifestações de cunho ideológico. Mantenha o foco em eventos sociais e corporativos.</p>
+                </div>
+            </div>
+
+            <!-- Sanções -->
+            <div class="section">
+                <div class="section-title">
+                    <div class="section-icon red">!</div>
+                    <span>Escala de Sanções</span>
+                </div>
+                <ul>
+                    <li><strong>1ª infração leve:</strong> Advertência por escrito e obrigatoriedade de curso de ética</li>
+                    <li><strong>2ª infração leve ou 1ª grave:</strong> Suspensão da conta por 30 dias</li>
+                    <li><strong>Infração gravíssima (proibições acima):</strong> Banimento permanente, perda de créditos e notificação policial</li>
+                </ul>
+            </div>
+
+            <div class="content-spacer"></div>
+
+        </div>
+
+        <div class="footer">
+            <div class="partners">
+                <span>Grupo mídiaTOTAL</span>
+                <span style="color: #cbd5e1;">×</span>
+                <span>Festa Net Brasil</span>
+            </div>
+            <div class="contact">
+                Dúvidas? Fale com Fábio: <a href="https://wa.me/5579998965081">(79) 99896-5081</a>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Checkbox Fixo -->
+    <div class="checkbox-container">
+        <div class="checkbox-wrapper">
+            <input type="checkbox" id="accept-terms" required>
+            <label for="accept-terms">
+                <strong>Li e aceito integralmente a Política de Uso</strong><br>
+                Declaro que compreendo as proibições, minhas responsabilidades como parceiro e as consequências do descumprimento. Confirmo que utilizarei a plataforma de forma ética e legal.
+            </label>
+        </div>
+    </div>
+
+</body>
+</html>

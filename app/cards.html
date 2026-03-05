@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Cartões A4 - 102 unidades</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f0f0;
+            padding: 20px;
+        }
+        
+        .controls {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            max-width: 800px;
+        }
+        
+        .control-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        input[type="text"], input[type="file"], input[type="range"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        input[type="range"] {
+            padding: 0;
+            height: 6px;
+        }
+        
+        .range-value {
+            display: inline-block;
+            margin-left: 10px;
+            font-weight: normal;
+            color: #666;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        
+        button {
+            background: #000;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+            margin-bottom: 5px;
+        }
+        
+        button:hover {
+            background: #333;
+        }
+        
+        button.secondary {
+            background: #444;
+        }
+        
+        button.secondary:hover {
+            background: #555;
+        }
+        
+        button.accent {
+            background: #0066cc;
+        }
+        
+        button.accent:hover {
+            background: #0052a3;
+        }
+        
+        .info {
+            background: #e3f2fd;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            font-size: 13px;
+        }
+        
+        /* Folha A4 */
+        .a4 {
+            width: 210mm;
+            height: 297mm;
+            background: white;
+            position: relative;
+            margin: 0 auto;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        /* Grid de cartões */
+        .grid {
+            position: absolute;
+            top: 5mm;
+            left: 5mm;
+            right: 5mm;
+            bottom: 5mm;
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            grid-template-rows: repeat(17, 1fr);
+            gap: 2mm;
+        }
+        
+        /* Cartão individual */
+        .card {
+            background: white;
+            border: 0.5px dashed #999;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Área da logo */
+        .logo-area {
+            width: 100%;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: #f9f9f9;
+            position: relative;
+        }
+        
+        .logo-area img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            transform: scale(var(--zoom, 1));
+            transition: transform 0.1s;
+        }
+        
+        /* Texto do site */
+        .site-text {
+            height: 4mm;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-size, 6pt);
+            font-weight: var(--font-weight, bold);
+            color: black;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: white;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding: 0 1mm;
+        }
+        
+        /* Linhas de corte */
+        .cut-h {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 0.3px;
+            background: red;
+            opacity: 0.4;
+            z-index: 100;
+        }
+        
+        .cut-v {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 0.3px;
+            background: red;
+            opacity: 0.4;
+            z-index: 100;
+        }
+        
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .controls {
+                display: none;
+            }
+            .a4 {
+                box-shadow: none;
+                margin: 0;
+            }
+        }
+        
+        .preview-img {
+            max-width: 200px;
+            max-height: 100px;
+            margin-top: 10px;
+            border: 1px solid #ddd;
+        }
+        
+        .two-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .download-section {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+        
+        .download-section h3 {
+            font-size: 14px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .quality-info {
+            background: #fff3cd;
+            padding: 8px;
+            border-radius: 4px;
+            margin-top: 10px;
+            font-size: 12px;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <h2>Gerador de Cartões de Acesso - A4</h2>
+        <div class="info">
+            Layout: 6 colunas × 17 linhas = <strong>102 cartões</strong><br>
+            Dimensão: 31.7mm × 15.0mm | Margem: 5mm | Espaço: 2mm
+        </div>
+        
+        <div class="control-group">
+            <label>Imagem da Logo:</label>
+            <input type="file" id="logoInput" accept="image/*">
+            <img id="preview" class="preview-img" style="display:none;">
+        </div>
+        
+        <div class="control-group">
+            <label>Tamanho da Imagem: <span class="range-value" id="zoomValue">100%</span></label>
+            <input type="range" id="zoomRange" min="10" max="150" value="100" step="5">
+            <small style="color:#666;">Ajuste o tamanho proporcional da imagem dentro do cartão</small>
+        </div>
+        
+        <div class="two-columns">
+            <div class="control-group">
+                <label>Endereço do Site:</label>
+                <input type="text" id="siteUrl" value="sou.net.br/pop" placeholder="ex: sou.net.br/pop">
+            </div>
+            
+            <div class="control-group">
+                <label>Tamanho do Texto: <span class="range-value" id="fontValue">6pt</span></label>
+                <input type="range" id="fontRange" min="4" max="12" value="6" step="0.5">
+            </div>
+        </div>
+        
+        <div class="checkbox-group">
+            <input type="checkbox" id="boldCheck" checked>
+            <label for="boldCheck" style="margin:0;font-weight:normal;">Texto em Negrito</label>
+        </div>
+        
+        <div style="margin-top:15px;">
+            <button onclick="generate()">Atualizar Cartões</button>
+            <button onclick="window.print()" class="secondary">Imprimir A4</button>
+        </div>
+
+        <div class="download-section">
+            <h3>Exportar Arquivo:</h3>
+            <button onclick="downloadPNG()" class="accent">Baixar PNG (Alta Resolução)</button>
+            <button onclick="downloadPDF()" class="accent">Baixar PDF Compactado (~1-2MB)</button>
+            
+            <div class="quality-info">
+                💡 <strong>Dica:</strong> O PDF agora é compactado com qualidade otimizada para WhatsApp. 
+                Se precisar de qualidade máxima para impressão profissional, use o botão "Imprimir A4" e salve como PDF.
+            </div>
+        </div>
+    </div>
+
+    <div class="a4" id="a4">
+        <div class="grid" id="grid"></div>
+    </div>
+
+    <script>
+        let logoData = null;
+        
+        // Atualizar valores mostrados
+        document.getElementById('zoomRange').addEventListener('input', function() {
+            document.getElementById('zoomValue').textContent = this.value + '%';
+            updateStyles();
+        });
+        
+        document.getElementById('fontRange').addEventListener('input', function() {
+            document.getElementById('fontValue').textContent = this.value + 'pt';
+            updateStyles();
+        });
+        
+        document.getElementById('boldCheck').addEventListener('change', updateStyles);
+        document.getElementById('siteUrl').addEventListener('input', updateTexts);
+        
+        document.getElementById('logoInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    logoData = event.target.result;
+                    document.getElementById('preview').src = logoData;
+                    document.getElementById('preview').style.display = 'block';
+                    generate();
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+        
+        function generate() {
+            const grid = document.getElementById('grid');
+            const siteUrl = document.getElementById('siteUrl').value || 'sou.net.br/pop';
+            grid.innerHTML = '';
+            
+            // Criar 102 cartões (6x17)
+            for (let i = 0; i < 102; i++) {
+                const card = document.createElement('div');
+                card.className = 'card';
+                
+                // Área da logo
+                const logoArea = document.createElement('div');
+                logoArea.className = 'logo-area';
+                
+                if (logoData) {
+                    const img = document.createElement('img');
+                    img.src = logoData;
+                    img.alt = 'Logo';
+                    img.style.setProperty('--zoom', document.getElementById('zoomRange').value / 100);
+                    logoArea.appendChild(img);
+                } else {
+                    logoArea.style.background = '#f0f0f0';
+                    logoArea.innerHTML = '<span style="color:#999;font-size:8px;">SEM IMAGEM</span>';
+                }
+                
+                // Texto do site
+                const siteText = document.createElement('div');
+                siteText.className = 'site-text';
+                siteText.textContent = siteUrl;
+                siteText.style.setProperty('--font-size', document.getElementById('fontRange').value + 'pt');
+                siteText.style.setProperty('--font-weight', document.getElementById('boldCheck').checked ? 'bold' : 'normal');
+                
+                card.appendChild(logoArea);
+                card.appendChild(siteText);
+                grid.appendChild(card);
+            }
+            
+            // Adicionar linhas de corte
+            addCutLines();
+        }
+        
+        function updateStyles() {
+            const zoom = document.getElementById('zoomRange').value / 100;
+            const fontSize = document.getElementById('fontRange').value + 'pt';
+            const fontWeight = document.getElementById('boldCheck').checked ? 'bold' : 'normal';
+            
+            // Atualizar imagens existentes
+            document.querySelectorAll('.logo-area img').forEach(img => {
+                img.style.setProperty('--zoom', zoom);
+            });
+            
+            // Atualizar textos existentes
+            document.querySelectorAll('.site-text').forEach(text => {
+                text.style.setProperty('--font-size', fontSize);
+                text.style.setProperty('--font-weight', fontWeight);
+            });
+        }
+        
+        function updateTexts() {
+            const siteUrl = document.getElementById('siteUrl').value || 'sou.net.br/pop';
+            document.querySelectorAll('.site-text').forEach(text => {
+                text.textContent = siteUrl;
+            });
+        }
+        
+        function addCutLines() {
+            const a4 = document.getElementById('a4');
+            const existing = a4.querySelectorAll('.cut-h, .cut-v');
+            existing.forEach(e => e.remove());
+            
+            // Linhas horizontais
+            for (let i = 1; i < 17; i++) {
+                const line = document.createElement('div');
+                line.className = 'cut-h';
+                const topPos = 5 + (i * 15) + ((i-1) * 2) + 1;
+                line.style.top = topPos + 'mm';
+                a4.appendChild(line);
+            }
+            
+            // Linhas verticais
+            for (let i = 1; i < 6; i++) {
+                const line = document.createElement('div');
+                line.className = 'cut-v';
+                const leftPos = 5 + (i * 31.67) + ((i-1) * 2) + 1;
+                line.style.left = leftPos + 'mm';
+                a4.appendChild(line);
+            }
+        }
+
+        // Função para baixar PNG (alta qualidade)
+        async function downloadPNG() {
+            const element = document.getElementById('a4');
+            const btn = event.target;
+            const originalText = btn.textContent;
+            btn.textContent = 'Gerando PNG...';
+            btn.disabled = true;
+            
+            try {
+                const canvas = await html2canvas(element, {
+                    scale: 3,
+                    useCORS: true,
+                    allowTaint: true,
+                    backgroundColor: '#ffffff',
+                    width: element.offsetWidth,
+                    height: element.offsetHeight
+                });
+                
+                const link = document.createElement('a');
+                link.download = 'cartoes-a4-102un.png';
+                link.href = canvas.toDataURL('image/png', 1.0);
+                link.click();
+            } catch (error) {
+                alert('Erro ao gerar PNG: ' + error.message);
+            } finally {
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        // Função para baixar PDF COMPACTADO (otimizado para WhatsApp)
+        async function downloadPDF() {
+            const element = document.getElementById('a4');
+            const btn = event.target;
+            const originalText = btn.textContent;
+            btn.textContent = 'Compactando PDF...';
+            btn.disabled = true;
+            
+            try {
+                // Configurações otimizadas para tamanho reduzido:
+                // Scale 1.5 = resolução suficiente para visualização digital
+                // JPEG quality 0.6 = boa qualidade visual com tamanho ~70% menor
+                
+                const canvas = await html2canvas(element, {
+                    scale: 1.5, // Reduzido de 2 para 1.5 (menos pixels)
+                    useCORS: true,
+                    allowTaint: true,
+                    backgroundColor: '#ffffff',
+                    width: element.offsetWidth,
+                    height: element.offsetHeight,
+                    imageTimeout: 0,
+                    onclone: (clonedDoc) => {
+                        // Otimização adicional: garantir que imagens estejam carregadas
+                        return new Promise((resolve) => {
+                            setTimeout(resolve, 100);
+                        });
+                    }
+                });
+                
+                // Usar JPEG com qualidade 0.6 em vez de PNG (compressão lossy eficiente)
+                const imgData = canvas.toDataURL('image/jpeg', 0.6);
+                
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF({
+                    orientation: 'portrait',
+                    unit: 'mm',
+                    format: 'a4',
+                    compress: true // Habilitar compressão interna do PDF
+                });
+                
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = pdf.internal.pageSize.getHeight();
+                
+                // Adicionar imagem JPEG comprimida
+                pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight, undefined, 'FAST');
+                
+                // Salvar com compressão
+                pdf.save('cartoes-a4-102un-compacto.pdf', { returnPromise: true });
+                
+            } catch (error) {
+                alert('Erro ao gerar PDF: ' + error.message);
+            } finally {
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
+        }
+        
+        // Gerar inicialmente
+        generate();
+    </script>
+</body>
+</html>

@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Personalizador | Festa Net Brasil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="icon" type="image/png" href="../img/favicon.png">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .custom-shadow {
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+        }
+        .drop-zone {
+            transition: all 0.2s ease;
+            border: 2px dashed #cbd5e1;
+            background-color: #ffffff;
+        }
+        .drop-zone:active {
+            transform: scale(0.98);
+            border-color: #3b82f6;
+        }
+        
+        .view-wrapper {
+            width: 100%;
+            max-width: 100%;
+            margin: 0 auto;
+            aspect-ratio: 1984 / 1100;
+            background-color: #1e293b;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #e2e8f0;
+        }
+
+        #progressView canvas {
+            display: block;
+            width: 100% !important;
+            height: auto !important;
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .hidden-input {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+
+        .loader {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3b82f6;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Estilos do Select Customizado */
+        .marca-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+        }
+        .marca-select:required:invalid {
+            color: #9ca3af;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center p-4 md:p-10">
+
+    <div class="w-full max-w-2xl bg-white rounded-3xl custom-shadow overflow-hidden border border-slate-100">
+        <header class="p-6 border-b flex flex-col items-center bg-white">
+            <img src="https://i.ibb.co/VDGyTDz/vazado-h-1.png" alt="Logo" class="h-10 mb-3">
+            <h1 class="text-xl font-bold text-slate-800">Personalizador de Fotos</h1>
+            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Compressão Máxima (Alvo 100KB)</p>
+        </header>
+
+        <main class="p-6 md:p-8 space-y-8">
+            
+            <!-- NOVO: Seleção de Marca (OBRIGATÓRIO) -->
+            <div class="space-y-2">
+                <label class="text-[11px] font-bold text-slate-500 uppercase ml-1 flex items-center justify-between">
+                    <span>1. Selecionar Marca *</span>
+                    <span id="marcaLoading" class="text-blue-500 hidden">
+                        <div class="loader !w-3 !h-3 !border-slate-300 !border-t-blue-500 inline-block mr-1"></div>
+                        Carregando...
+                    </span>
+                </label>
+                <div class="relative">
+                    <select id="marcaSelect" class="marca-select w-full bg-slate-50 border-2 border-slate-200 text-slate-700 font-bold py-4 px-4 pr-10 rounded-2xl focus:outline-none focus:border-blue-500 focus:bg-white transition-all cursor-pointer" required>
+                        <option value="" disabled selected>Escolha uma marca...</option>
+                    </select>
+                    <div id="marcaError" class="hidden absolute inset-0 bg-red-50 border-2 border-red-300 rounded-2xl flex items-center justify-center text-red-500 text-xs font-bold">
+                        Erro ao carregar marcas
+                    </div>
+                </div>
+                <p class="text-[10px] text-slate-400 ml-1">Adicione arquivos .webp em /marcas/ (ex: FestaNet.webp)</p>
+            </div>
+
+            <!-- Uploads -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="space-y-2">
+                    <label class="text-[11px] font-bold text-slate-500 uppercase ml-1">2. Fotos para Personalizar</label>
+                    <label for="images" class="drop-zone flex flex-col items-center justify-center p-4 rounded-2xl cursor-pointer h-32 hover:bg-slate-50 transition-colors">
+                        <i data-lucide="image-plus" class="w-8 h-8 text-blue-500 mb-2"></i>
+                        <span id="imagesPreviewText" class="text-xs font-bold text-slate-600 text-center">Selecionar Fotos</span>
+                        <input type="file" id="images" class="hidden-input" accept="image/*" multiple>
+                    </label>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-[11px] font-bold text-slate-500 uppercase ml-1">3. Sua Moldura (PNG/JPG)</label>
+                    <label for="watermark" class="drop-zone flex flex-col items-center justify-center p-4 rounded-2xl cursor-pointer h-32 hover:bg-slate-50 transition-colors">
+                        <i data-lucide="layout-template" class="w-8 h-8 text-purple-500 mb-2"></i>
+                        <span id="watermarkPreviewText" class="text-xs font-bold text-slate-600 text-center">Selecionar Moldura</span>
+                        <input type="file" id="watermark" class="hidden-input" accept="image/*">
+                    </label>
+                </div>
+            </div>
+
+            <!-- Preview Area -->
+            <div id="previewArea" class="hidden space-y-3">
+                <div class="flex justify-between items-center px-1">
+                    <span class="text-[11px] font-bold text-slate-500 uppercase flex items-center">
+                        <i data-lucide="eye" class="w-4 h-4 mr-2"></i> Preview de Alta Compressão
+                    </span>
+                    <span class="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded-md font-bold">~120 KB</span>
+                </div>
+                
+                <div id="progressView" class="view-wrapper"></div>
+            </div>
+
+            <!-- Botão de Ação -->
+            <button id="convertButton" class="w-full bg-slate-900 hover:bg-black text-white font-bold py-5 rounded-2xl shadow-xl transition-all flex items-center justify-center space-x-3 text-lg disabled:bg-slate-300 disabled:cursor-not-allowed">
+                <i data-lucide="zap" class="w-6 h-6 text-yellow-400"></i>
+                <span>PROCESSAR E COMPRIMIR</span>
+            </button>
+        </main>
+
+        <footer class="bg-slate-50 p-4 text-center border-t border-slate-100">
+            <p class="text-[10px] text-slate-400 font-bold">© 2025 FESTA NET BRASIL - REDUÇÃO DE ATÉ 75% NO PESO</p>
+        </footer>
+    </div>
+
+    <!-- Modal Sucesso -->
+    <div id="successModal" class="fixed inset-0 bg-slate-900/80 hidden flex items-center justify-center p-4 z-50 backdrop-blur-sm">
+        <div class="bg-white rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl">
+            <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-5">
+                <i data-lucide="check" class="w-10 h-10"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-slate-800">Concluído!</h2>
+            <p class="text-slate-500 mt-2 text-sm leading-relaxed">Suas imagens foram processadas com compressão máxima para facilitar o compartilhamento.</p>
+            <button onclick="closeModal()" class="mt-8 w-full py-4 bg-slate-900 text-white rounded-2xl font-bold hover:bg-black transition-transform active:scale-95">FECHAR</button>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            const imageInput = document.getElementById('images');
+            const watermarkInput = document.getElementById('watermark');
+            const progressView = document.getElementById('progressView');
+            const previewArea = document.getElementById('previewArea');
+            const imagesPreviewText = document.getElementById('imagesPreviewText');
+            const watermarkPreviewText = document.getElementById('watermarkPreviewText');
+            const convertButton = document.getElementById('convertButton');
+            const successModal = document.getElementById('successModal');
+            const marcaSelect = document.getElementById('marcaSelect');
+            const marcaLoading = document.getElementById('marcaLoading');
+            const marcaError = document.getElementById('marcaError');
+
+            let selectedMarca = null;
+            let marcasDisponiveis = [];
+
+            const loadImage = (url) => new Promise((resolve, reject) => {
+                const img = new Image();
+                if (!url.startsWith('blob:')) img.crossOrigin = 'Anonymous';
+                img.onload = () => resolve(img);
+                img.onerror = () => reject(new Error('Erro ao carregar imagem'));
+                img.src = url;
+            });
+
+            // FUNÇÃO: Carregar marcas do PHP
+            const carregarMarcas = async () => {
+                marcaLoading.classList.remove('hidden');
+                marcaSelect.disabled = true;
+                
+                try {
+                    // Tenta buscar do PHP primeiro, senão usa JSON estático
+                    let response;
+                    try {
+                        response = await fetch('marcas/marcas.php');
+                    } catch (e) {
+                        response = await fetch('marcas/marcas.json');
+                    }
+                    
+                    if (!response.ok) throw new Error('Falha na requisição');
+                    
+                    const data = await response.json();
+                    
+                    if (!data.sucesso || data.marcas.length === 0) {
+                        throw new Error('Nenhuma marca encontrada');
+                    }
+
+                    marcasDisponiveis = data.marcas;
+                    
+                    // Limpa e popula o select
+                    marcaSelect.innerHTML = '<option value="" disabled selected>Escolha uma marca...</option>';
+                    
+                    data.marcas.forEach(marca => {
+                        const option = document.createElement('option');
+                        option.value = marca.caminho;
+                        option.textContent = marca.nome;
+                        option.dataset.arquivo = marca.arquivo;
+                        marcaSelect.appendChild(option);
+                    });
+
+                    marcaSelect.disabled = false;
+                    marcaLoading.classList.add('hidden');
+                    
+                } catch (error) {
+                    console.error('Erro ao carregar marcas:', error);
+                    marcaLoading.classList.add('hidden');
+                    marcaError.classList.remove('hidden');
+                    marcaSelect.classList.add('hidden');
+                }
+            };
+
+            // Carrega marcas ao iniciar
+            await carregarMarcas();
+
+            // Evento: Mudança de marca
+            marcaSelect.addEventListener('change', async (e) => {
+                const caminho = e.target.value;
+                const marcaSelecionada = marcasDisponiveis.find(m => m.caminho === caminho);
+                
+                if (marcaSelecionada) {
+                    try {
+                        selectedMarca = await loadImage(caminho);
+                        refreshPreview();
+                    } catch (err) {
+                        alert('Erro ao carregar imagem da marca');
+                        selectedMarca = null;
+                    }
+                }
+            });
+
+            const updateLabel = (input, element, defaultText) => {
+                const count = input.files.length;
+                element.textContent = count > 0 ? `${count} selecionada(s)` : defaultText;
+                element.classList.toggle('text-blue-600', count > 0);
+            };
+
+            const processImage = (image, marcaWatermark, userWatermark) => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const targetWidth = 1984;
+                const targetHeight = 1100;
+                canvas.width = targetWidth;
+                canvas.height = targetHeight;
+
+                ctx.imageSmoothingEnabled = true;
+                ctx.imageSmoothingQuality = 'high';
+
+                const imgRatio = image.width / image.height;
+                const targetRatio = targetWidth / targetHeight;
+                let newWidth, newHeight;
+
+                if (imgRatio > targetRatio) {
+                    newWidth = image.width / (image.height / targetHeight);
+                    newHeight = targetHeight;
+                } else {
+                    newWidth = targetWidth;
+                    newHeight = image.height / (image.width / targetWidth);
+                }
+                
+                ctx.drawImage(image, (targetWidth - newWidth) / 2, (targetHeight - newHeight) / 2, newWidth, newHeight);
+
+                if (userWatermark) {
+                    ctx.drawImage(userWatermark, (targetWidth - userWatermark.width) / 2, targetHeight - userWatermark.height);
+                }
+
+                if (marcaWatermark) {
+                    ctx.drawImage(marcaWatermark, (targetWidth - marcaWatermark.width) / 2, (targetHeight - marcaWatermark.height) / 2);
+                }
+
+                return canvas;
+            };
+
+            const refreshPreview = async () => {
+                // Verifica se tem marca selecionada
+                if (!selectedMarca) {
+                    previewArea.classList.add('hidden');
+                    return;
+                }
+
+                if (imageInput.files.length === 0 || watermarkInput.files.length === 0) {
+                    previewArea.classList.add('hidden');
+                    return;
+                }
+
+                try {
+                    previewArea.classList.remove('hidden');
+                    progressView.innerHTML = '<div class="loader"></div>';
+                    const imgUrl = URL.createObjectURL(imageInput.files[0]);
+                    const wmUrl = URL.createObjectURL(watermarkInput.files[0]);
+                    const [img, wm] = await Promise.all([loadImage(imgUrl), loadImage(wmUrl)]);
+                    const canvas = processImage(img, selectedMarca, wm);
+                    progressView.innerHTML = '';
+                    progressView.appendChild(canvas);
+                    URL.revokeObjectURL(imgUrl);
+                    URL.revokeObjectURL(wmUrl);
+                } catch (e) {
+                    progressView.innerHTML = '<p class="text-red-500 text-[10px] font-bold">ERRO NO ARQUIVO</p>';
+                }
+            };
+
+            imageInput.addEventListener('change', () => {
+                updateLabel(imageInput, imagesPreviewText, 'Selecionar Fotos');
+                refreshPreview();
+            });
+
+            watermarkInput.addEventListener('change', () => {
+                updateLabel(watermarkInput, watermarkPreviewText, 'Selecionar Moldura');
+                refreshPreview();
+            });
+
+            convertButton.addEventListener('click', async () => {
+                // Validações
+                if (!selectedMarca) {
+                    alert('Por favor, selecione uma marca primeiro!');
+                    marcaSelect.focus();
+                    return;
+                }
+
+                if (imageInput.files.length === 0) {
+                    alert('Selecione as fotos para personalizar!');
+                    return;
+                }
+
+                if (watermarkInput.files.length === 0) {
+                    alert('Selecione a moldura!');
+                    return;
+                }
+
+                convertButton.disabled = true;
+                const oldHTML = convertButton.innerHTML;
+                convertButton.innerHTML = `<div class="loader !w-5 !h-5 !border-white !border-t-transparent"></div> <span>COMPRIMINDO...</span>`;
+
+                try {
+                    const wmUrl = URL.createObjectURL(watermarkInput.files[0]);
+                    const wm = await loadImage(wmUrl);
+                    const files = Array.from(imageInput.files);
+                    const nomeMarca = marcaSelect.options[marcaSelect.selectedIndex].text.replace(/\s+/g, '');
+
+                    for (let i = 0; i < files.length; i++) {
+                        const fileUrl = URL.createObjectURL(files[i]);
+                        const img = await loadImage(fileUrl);
+                        const canvas = processImage(img, selectedMarca, wm);
+                        
+                        const link = document.createElement('a');
+                        link.href = canvas.toDataURL('image/jpeg', 0.38); 
+                        link.download = `${nomeMarca}_Mini_${Date.now()}_${i+1}.jpg`;
+                        link.click();
+                        
+                        URL.revokeObjectURL(fileUrl);
+                        await new Promise(r => setTimeout(r, 300));
+                    }
+                    URL.revokeObjectURL(wmUrl);
+                    successModal.classList.remove('hidden');
+                } catch (e) {
+                    alert('Erro ao processar: ' + e.message);
+                } finally {
+                    convertButton.disabled = false;
+                    convertButton.innerHTML = oldHTML;
+                }
+            });
+        });
+
+        function closeModal() {
+            document.getElementById('successModal').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>

@@ -3,212 +3,183 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerador de Moldura</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <title>Área do Parceiro</title>
+    <link rel="icon" type="image/png" href="../img/favicon.png">
     <style>
-        body {
+        * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
         }
-        
-        .frame {
-            width: 1984px;
-            height: 130px;
-            transform: scale(0.5);
-            transform-origin: center;
-            margin: -65px 0;
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+            padding: 40px 20px;
         }
-        
-        .frame-title {
-            font-size: 36px;
-            line-height: 1.1;
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
         }
-        
-        .frame-subtitle {
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 1.8rem;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 8px;
+            padding: 25px;
+            text-decoration: none;
+            color: #333;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transform: translateY(-2px);
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
             font-size: 24px;
-            line-height: 1.2;
         }
-        
-        .frame-date {
-            font-size: 20px;
-            line-height: 1.2;
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 5px;
+            color: #222;
         }
-        
-        @media (max-width: 1200px) {
-            .frame {
-                transform: scale(0.4);
-                margin: -78px 0;
-            }
+
+        .card-description {
+            font-size: 0.85rem;
+            color: #777;
+            line-height: 1.4;
         }
-        
-        @media (max-width: 800px) {
-            .frame {
-                transform: scale(0.3);
-                margin: -91px 0;
-            }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            color: #999;
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 20px 15px; }
+            h1 { font-size: 1.5rem; }
+            .cards-grid { grid-template-columns: 1fr; }
         }
     </style>
+<base target="_blank">
 </head>
-<body class="bg-gray-100 p-5">
-    <div class="max-w-6xl mx-auto bg-white rounded-xl p-8 shadow-xl">
-        <h1 class="text-center text-gray-800 text-3xl font-bold mb-8">Gerador de Moldura</h1>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <div class="flex flex-col">
-                <label for="titulo" class="font-semibold mb-2 text-gray-700 text-sm">Título *</label>
-                <input type="text" id="titulo" placeholder="Digite o título" value="Título Principal" 
-                       class="p-3 border-2 border-gray-200 rounded-lg text-base focus:outline-none focus:border-indigo-500 transition-colors">
-            </div>
-            
-            <div class="flex flex-col">
-                <label for="subtitulo" class="font-semibold mb-2 text-gray-700 text-sm">Subtítulo (opcional)</label>
-                <input type="text" id="subtitulo" placeholder="Digite o subtítulo"
-                       class="p-3 border-2 border-gray-200 rounded-lg text-base focus:outline-none focus:border-indigo-500 transition-colors">
-            </div>
-            
-            <div class="flex flex-col">
-                <label for="data" class="font-semibold mb-2 text-gray-700 text-sm">Data (opcional)</label>
-                <input type="text" id="data" placeholder="Digite a data"
-                       class="p-3 border-2 border-gray-200 rounded-lg text-base focus:outline-none focus:border-indigo-500 transition-colors">
-            </div>
-            
-            <div class="flex flex-col">
-                <label for="cor" class="font-semibold mb-2 text-gray-700 text-sm">Cor de Fundo</label>
-                <input type="color" id="cor" value="#ffffff" 
-                       class="w-16 h-12 border-2 border-gray-200 rounded-lg cursor-pointer">
-            </div>
-        </div>
-        
-        <div class="flex justify-center my-8">
-            <div class="frame bg-white border border-gray-300 flex flex-col justify-center pl-10 box-border" id="moldura">
-                <div class="frame-title font-bold text-gray-900 m-0" id="tituloFrame">Título Principal</div>
-                <div class="frame-subtitle font-normal text-gray-600 mt-1 m-0" id="subtituloFrame" style="display: none;"></div>
-                <div class="frame-date font-normal text-gray-500 mt-1 m-0" id="dataFrame" style="display: none;"></div>
-            </div>
-        </div>
-        
-        <div class="text-center">
-            <button onclick="baixarMoldura()" 
-                    class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg text-base transition-colors mt-5">
-                Baixar Moldura
-            </button>
-        </div>
+<body>
+    <div class="container">
+        <header>
+            <img src="../img/logo.webp" alt="Logo" class="logo">
+            <h1>Área do Parceiro</h1>
+            <p class="subtitle">Gerencie seus recursos e ferramentas</p>
+        </header>
+
+        <main class="cards-grid">
+            <a href="moldura_eventos_e_anunciantes.html" class="card">
+                <div class="card-icon">🎭</div>
+                <h2 class="card-title">Moldura Eventos</h2>
+                <p class="card-description">Molduras para eventos e anunciantes</p>
+            </a>
+
+            <a href="moldura_anunciantes.html" class="card">
+                <div class="card-icon">🖼️</div>
+                <h2 class="card-title">Moldura Anunciantes</h2>
+                <p class="card-description">Crie molduras personalizadas</p>
+            </a>
+
+            <a href="criar_anunciantes.html" class="card">
+                <div class="card-icon">➕</div>
+                <h2 class="card-title">Criar Anunciantes</h2>
+                <p class="card-description">Cadastre novos anunciantes</p>
+            </a>
+
+            <a href="cards.html" class="card">
+                <div class="card-icon">🎴</div>
+                <h2 class="card-title">Cards</h2>
+                <p class="card-description">Gerencie seus cards</p>
+            </a>
+
+            <a href="conversor.html" class="card">
+                <div class="card-icon">🔄</div>
+                <h2 class="card-title">Conversor</h2>
+                <p class="card-description">Conversão de arquivos</p>
+            </a>
+
+            <a href="info.html" class="card">
+                <div class="card-icon">ℹ️</div>
+                <h2 class="card-title">Informações</h2>
+                <p class="card-description">Dados e estatísticas</p>
+            </a>
+
+            <a href="dicas.html" class="card">
+                <div class="card-icon">💡</div>
+                <h2 class="card-title">Dicas</h2>
+                <p class="card-description">Tutoriais e dicas</p>
+            </a>
+
+            <a href="avisos.html" class="card">
+                <div class="card-icon">🔔</div>
+                <h2 class="card-title">Avisos</h2>
+                <p class="card-description">Notificações</p>
+            </a>
+
+            <a href="drive.html" class="card">
+                <div class="card-icon">☁️</div>
+                <h2 class="card-title">Drive</h2>
+                <p class="card-description">Armazenamento</p>
+            </a>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 Área do Parceiro</p>
+        </footer>
     </div>
-
-    <script>
-        const titulo = document.getElementById('titulo');
-        const subtitulo = document.getElementById('subtitulo');
-        const data = document.getElementById('data');
-        const cor = document.getElementById('cor');
-        const moldura = document.getElementById('moldura');
-        const tituloFrame = document.getElementById('tituloFrame');
-        const subtituloFrame = document.getElementById('subtituloFrame');
-        const dataFrame = document.getElementById('dataFrame');
-
-        function atualizarMoldura() {
-            // Atualizar título
-            tituloFrame.textContent = titulo.value || 'Título Principal';
-            
-            // Atualizar cor de fundo
-            moldura.style.backgroundColor = cor.value;
-            
-            // Verificar se subtítulo existe
-            const temSubtitulo = subtitulo.value.trim() !== '';
-            const temData = data.value.trim() !== '';
-            
-            if (temSubtitulo) {
-                subtituloFrame.textContent = subtitulo.value;
-                subtituloFrame.style.display = 'block';
-            } else {
-                subtituloFrame.style.display = 'none';
-            }
-            
-            if (temData) {
-                dataFrame.textContent = data.value;
-                dataFrame.style.display = 'block';
-            } else {
-                dataFrame.style.display = 'none';
-            }
-            
-            // Ajustar posicionamento vertical baseado no conteúdo
-            if (!temSubtitulo && !temData) {
-                // Só título - centralizar
-                moldura.style.justifyContent = 'center';
-            } else if (temSubtitulo && temData) {
-                // Todos os elementos - distribuir
-                moldura.style.justifyContent = 'center';
-            } else {
-                // Dois elementos - ajustar como sanduíche
-                moldura.style.justifyContent = 'center';
-            }
-        }
-
-        // Event listeners
-        titulo.addEventListener('input', atualizarMoldura);
-        subtitulo.addEventListener('input', atualizarMoldura);
-        data.addEventListener('input', atualizarMoldura);
-        cor.addEventListener('input', atualizarMoldura);
-
-        function baixarMoldura() {
-            // Criar canvas
-            const canvas = document.createElement('canvas');
-            canvas.width = 1984;
-            canvas.height = 130;
-            const ctx = canvas.getContext('2d');
-            
-            // Preencher fundo
-            ctx.fillStyle = cor.value;
-            ctx.fillRect(0, 0, 1984, 130);
-            
-            // Configurar fonte
-            ctx.fillStyle = '#1a1a1a';
-            ctx.textAlign = 'left';
-            ctx.textBaseline = 'top';
-            
-            const temSubtitulo = subtitulo.value.trim() !== '';
-            const temData = data.value.trim() !== '';
-            
-            let yPosition = 40; // Posição inicial
-            
-            // Calcular posicionamento vertical
-            const totalElements = 1 + (temSubtitulo ? 1 : 0) + (temData ? 1 : 0);
-            if (totalElements === 1) {
-                yPosition = 47; // Centralizar título
-            } else if (totalElements === 2) {
-                yPosition = 35; // Ajuste para dois elementos
-            } else {
-                yPosition = 25; // Ajuste para três elementos
-            }
-            
-            // Desenhar título
-            ctx.font = 'bold 36px Inter, sans-serif';
-            ctx.fillText(titulo.value || 'Título Principal', 40, yPosition);
-            yPosition += 40;
-            
-            // Desenhar subtítulo se existir
-            if (temSubtitulo) {
-                ctx.font = '400 24px Inter, sans-serif';
-                ctx.fillStyle = '#666';
-                ctx.fillText(subtitulo.value, 40, yPosition);
-                yPosition += 28;
-            }
-            
-            // Desenhar data se existir
-            if (temData) {
-                ctx.font = '400 20px Inter, sans-serif';
-                ctx.fillStyle = '#888';
-                ctx.fillText(data.value, 40, yPosition);
-            }
-            
-            // Baixar imagem
-            const link = document.createElement('a');
-            link.download = 'moldura.png';
-            link.href = canvas.toDataURL();
-            link.click();
-        }
-
-        // Inicializar
-        atualizarMoldura();
-    </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'986d6556955b0ed6',t:'MTc1OTE2ODk5MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>

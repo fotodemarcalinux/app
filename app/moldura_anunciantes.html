@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Moldura | Festa Net Brasil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .canvas-container {
+            width: 100%;
+            max-width: 1000px;
+            aspect-ratio: 1984 / 150;
+            background: #e5e7eb;
+            position: relative;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: #f1f1f1; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen">
+
+    <nav class="bg-white border-b border-slate-200 py-4 mb-8">
+        <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-xl">F</div>
+                <h1 class="text-xl font-bold text-slate-800">Festa Net Brasil <span class="text-indigo-600">Molduras</span></h1>
+            </div>
+            <div class="text-sm text-slate-500 font-medium">Versão 3.0 - Moldura 150px</div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 pb-20">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- Coluna de Controles -->
+            <div class="lg:col-span-4 space-y-6">
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="p-6 border-b border-slate-100 bg-slate-50/50">
+                        <h2 class="font-bold text-slate-800">Configurações</h2>
+                    </div>
+
+                    <div class="p-6 space-y-5 max-h-[600px] overflow-y-auto custom-scroll">
+                        
+                        <!-- Título -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Título (Linha Descritiva)</label>
+                            <input type="text" id="input-titulo" value="FESTA NOME DA FESTA - 00 DE MESDAFESTA DE 000" 
+                                class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-sm">
+                            <p class="text-xs text-slate-400 mt-1">Arial Negrito 10px - Alinhado à esquerda no topo</p>
+                        </div>
+
+                        <!-- Objetos -->
+                        <div class="border-t border-slate-100 pt-4">
+                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Objetos (Parte Inferior)</label>
+                            <div class="bg-indigo-50 p-3 rounded-lg border border-indigo-100 mb-3">
+                                <p class="text-xs text-indigo-700 font-medium">💡 Máx 130px de altura, rente à base inferior</p>
+                            </div>
+                            <input type="file" id="input-objects" accept="image/*" class="hidden" multiple>
+                            <label for="input-objects" class="flex items-center justify-center w-full px-4 py-6 border-2 border-dashed border-slate-200 rounded-xl hover:border-indigo-400 hover:bg-indigo-50/30 cursor-pointer transition-all">
+                                <div class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto text-slate-400 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                                    </svg>
+                                    <span class="text-sm font-medium text-indigo-600">Adicionar Logos/Objetos</span>
+                                </div>
+                            </label>
+                            <div id="objects-list" class="mt-3 space-y-2"></div>
+                        </div>
+
+                    </div>
+                    
+                    <div class="p-6 bg-slate-50 border-t border-slate-100">
+                        <button id="btn-reset" class="w-full py-2.5 text-sm font-bold text-slate-500 hover:text-red-500 transition-colors">Limpar Tudo</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Coluna de Preview -->
+            <div class="lg:col-span-8 space-y-6">
+                
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-200">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-lg font-bold text-slate-800">Visualização</h2>
+                        <span class="px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full">1984 x 150 PX</span>
+                    </div>
+
+                    <div class="canvas-container rounded-lg border border-slate-300">
+                        <canvas id="mainCanvas"></canvas>
+                    </div>
+
+                    <div class="mt-8 flex flex-col sm:flex-row gap-4">
+                        <button onclick="downloadImage()" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-8 rounded-2xl shadow-lg shadow-indigo-200 transition-all flex items-center justify-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                            Baixar Moldura PNG
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800 p-6 rounded-2xl text-white">
+                    <h3 class="font-bold mb-1">JN2M3A DIGITAL</h3>
+                    <p class="text-sm text-slate-400">Suporte: (79) 99896-5081</p>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <script>
+        (function() {
+            const canvas = document.getElementById('mainCanvas');
+            const ctx = canvas.getContext('2d');
+            const CANVAS_W = 1984;
+            const CANVAS_H = 150;
+
+            canvas.width = CANVAS_W;
+            canvas.height = CANVAS_H;
+
+            let objectsList = []; 
+
+            const inputs = {
+                titulo: document.getElementById('input-titulo'),
+                objects: document.getElementById('input-objects')
+            };
+
+            window.draw = function() {
+                // Fundo branco
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
+
+                // Título - Arial Negrito 10px, alinhado à esquerda no topo
+                const titulo = inputs.titulo.value;
+                if (titulo.trim() !== "") {
+                    ctx.font = 'bold 10px Arial';
+                    ctx.fillStyle = '#000000';
+                    ctx.textAlign = 'left';
+                    ctx.textBaseline = 'top';
+                    ctx.fillText(titulo, 10, 5);
+                }
+
+                // Objetos na parte inferior - rente à base (sem margem inferior)
+                const spacing = 12;
+                const maxObjectHeight = 130;
+                let rightXOffset = CANVAS_W - spacing;
+
+                // Itera de trás para frente para alinhar da direita para esquerda
+                for (let i = objectsList.length - 1; i >= 0; i--) {
+                    const obj = objectsList[i];
+                    const ratio = obj.img.width / obj.img.height;
+                    const drawH = Math.min(maxObjectHeight, obj.img.height);
+                    const drawW = drawH * ratio;
+                    
+                    // Posiciona rente à base inferior (CANVAS_H - drawH)
+                    const yPos = CANVAS_H - drawH;
+                    
+                    rightXOffset -= drawW;
+                    ctx.drawImage(obj.img, rightXOffset, yPos, drawW, drawH);
+                    rightXOffset -= spacing;
+                }
+            };
+
+            inputs.objects.addEventListener('change', function(e) {
+                const files = Array.from(e.target.files);
+                files.forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        const img = new Image();
+                        img.onload = function() {
+                            const objId = Date.now() + Math.random();
+                            objectsList.push({ id: objId, img: img });
+                            renderObjectsUI();
+                            window.draw();
+                        };
+                        img.src = event.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                });
+                this.value = "";
+            });
+
+            function renderObjectsUI() {
+                const container = document.getElementById('objects-list');
+                container.innerHTML = "";
+                objectsList.forEach((obj, index) => {
+                    const div = document.createElement('div');
+                    div.className = "flex items-center justify-between p-2 bg-slate-50 border border-slate-200 rounded-lg";
+                    div.innerHTML = `
+                        <div class="flex items-center gap-2">
+                            <img src="${obj.img.src}" class="w-10 h-10 object-contain bg-white border border-slate-200 rounded">
+                            <span class="text-xs font-medium text-slate-600">Objeto ${index + 1}</span>
+                        </div>
+                        <button onclick="removeObject(${obj.id})" class="text-red-500 hover:text-red-700 p-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-4v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                        </button>
+                    `;
+                    container.appendChild(div);
+                });
+            }
+
+            window.removeObject = function(id) {
+                objectsList = objectsList.filter(o => o.id !== id);
+                renderObjectsUI();
+                window.draw();
+            };
+
+            window.downloadImage = function() {
+                const link = document.createElement('a');
+                link.download = `moldura-festa-net-${Date.now()}.png`;
+                link.href = canvas.toDataURL('image/png', 1.0);
+                link.click();
+            };
+
+            inputs.titulo.addEventListener('input', window.draw);
+
+            document.getElementById('btn-reset').addEventListener('click', () => {
+                if(confirm('Limpar todas as configurações?')) {
+                    inputs.titulo.value = "";
+                    objectsList = [];
+                    renderObjectsUI();
+                    window.draw();
+                }
+            });
+
+            window.onload = () => { window.draw(); setTimeout(window.draw, 500); };
+            if (document.readyState === "complete") window.draw();
+        })();
+    </script>
+</body>
+</html>

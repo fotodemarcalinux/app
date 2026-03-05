@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Moldura Pro | Festa Net Brasil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="img/favicon.png">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .canvas-container {
+            width: 100%;
+            max-width: 1000px;
+            aspect-ratio: 1984 / 150;
+            background: #e5e7eb;
+            position: relative;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: #f1f1f1; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .tab-active { border-bottom: 2px solid #4f46e5; color: #4f46e5; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen">
+
+    <nav class="bg-white border-b border-slate-200 py-4 mb-8">
+        <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-xl">F</div>
+                <h1 class="text-xl font-bold text-slate-800">Festa Net Brasil <span class="text-indigo-600">Molduras</span></h1>
+            </div>
+            <div class="text-sm text-slate-500 font-medium">Versão 2.8 Pro</div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 pb-20">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- Coluna de Controlos -->
+            <div class="lg:col-span-4 space-y-6">
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <!-- Abas -->
+                    <div class="flex border-b border-slate-100 bg-slate-50/50">
+                        <button onclick="switchTab('text')" id="tab-text" class="flex-1 py-3 text-xs font-semibold tab-active">Conteúdo</button>
+                        <button onclick="switchTab('objects')" id="tab-objects" class="flex-1 py-3 text-xs font-semibold text-slate-500">Objetos</button>
+                    </div>
+
+                    <div class="p-6 space-y-5 max-h-[600px] overflow-y-auto custom-scroll">
+                        
+                        <!-- Secção Conteúdo -->
+                        <div id="section-text" class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Título Principal</label>
+                                <input type="text" id="input-titulo" value="Evento Corporativo 2025" 
+                                    class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Subtítulo</label>
+                                <input type="text" id="input-subtitulo" placeholder="Ex: Palestra Magna"
+                                    class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Data / Local</label>
+                                <input type="text" id="input-data" placeholder="Ex: 20 de Outubro - São Paulo"
+                                    class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all">
+                            </div>
+                            <div class="pt-2">
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Logo Principal (Esquerda)</label>
+                                <div class="relative group">
+                                    <input type="file" id="input-logo" accept="image/*" class="hidden">
+                                    <label for="input-logo" class="flex items-center justify-center w-full px-4 py-8 border-2 border-dashed border-slate-200 rounded-2xl hover:border-indigo-400 hover:bg-indigo-50/30 cursor-pointer transition-all">
+                                        <div class="text-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto text-slate-400 group-hover:text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                            </svg>
+                                            <span class="mt-2 block text-sm font-medium text-slate-600">Logo Esquerda</span>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Secção Objetos -->
+                        <div id="section-objects" class="hidden space-y-4">
+                            <div class="bg-indigo-50 p-3 rounded-lg border border-indigo-100 mb-2">
+                                <p class="text-xs text-indigo-700 font-medium">💡 Objetos com 150px de altura mantendo proporção</p>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Adicionar Objetos (Direita)</label>
+                                <input type="file" id="input-object-file" accept="image/*" class="hidden" multiple>
+                                <label for="input-object-file" class="flex items-center justify-center w-full px-4 py-4 border-2 border-dashed border-slate-200 rounded-xl hover:border-indigo-400 hover:bg-indigo-50/30 cursor-pointer transition-all">
+                                    <div class="text-center">
+                                        <span class="text-sm font-medium text-indigo-600">+ Subir Imagem</span>
+                                    </div>
+                                </label>
+                            </div>
+                            <div id="objects-list" class="space-y-2">
+                                <!-- Objetos aparecerão aqui -->
+                            </div>
+                        </div>
+
+                    </div>
+                    
+                    <div class="p-6 bg-slate-50 border-t border-slate-100">
+                        <button id="btn-reset" class="w-full py-2.5 text-sm font-bold text-slate-500 hover:text-red-500 transition-colors">Resetar Tudo</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Coluna de Preview -->
+            <div class="lg:col-span-8 space-y-6">
+                
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-200">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-lg font-bold text-slate-800">Visualização em Tempo Real</h2>
+                        <span class="px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full">1984 x 150 PX</span>
+                    </div>
+
+                    <div class="canvas-container rounded-lg border border-slate-300">
+                        <canvas id="mainCanvas"></canvas>
+                    </div>
+
+                    <div class="mt-8 flex flex-col sm:flex-row gap-4">
+                        <button onclick="downloadImage()" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-8 rounded-2xl shadow-lg shadow-indigo-200 transition-all flex items-center justify-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                            Baixar Moldura PNG
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-indigo-50 p-6 rounded-2xl border border-indigo-100 text-indigo-900">
+                        <h3 class="font-bold mb-1">Dica de Design</h3>
+                        <p class="text-sm">Ao apagar o título, a moldura agora fica limpa para dar foco total aos seus objetos e logos.</p>
+                    </div>
+                    <div class="bg-slate-800 p-6 rounded-2xl text-white">
+                        <h3 class="font-bold mb-1">JN2M3A DIGITAL</h3>
+                        <p class="text-sm text-slate-400">Suporte: (79) 99896-5081</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <script>
+        (function() {
+            const canvas = document.getElementById('mainCanvas');
+            const ctx = canvas.getContext('2d');
+            const CANVAS_W = 1984;
+            const CANVAS_H = 150;
+
+            canvas.width = CANVAS_W;
+            canvas.height = CANVAS_H;
+
+            let logoEsquerda = null;
+            let objectsList = []; 
+
+            const inputs = {
+                titulo: document.getElementById('input-titulo'),
+                subtitulo: document.getElementById('input-subtitulo'),
+                data: document.getElementById('input-data'),
+                logo: document.getElementById('input-logo'),
+                objectFile: document.getElementById('input-object-file')
+            };
+
+            window.switchTab = function(tab) {
+                ['text', 'objects'].forEach(t => {
+                    document.getElementById('section-' + t).classList.add('hidden');
+                    document.getElementById('tab-' + t).classList.remove('tab-active');
+                    document.getElementById('tab-' + t).classList.add('text-slate-500');
+                });
+                document.getElementById('section-' + tab).classList.remove('hidden');
+                document.getElementById('tab-' + tab).classList.add('tab-active');
+                document.getElementById('tab-' + tab).classList.remove('text-slate-500');
+            };
+
+            window.draw = function() {
+                ctx.clearRect(0, 0, CANVAS_W, CANVAS_H);
+                
+                // Fundo branco
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
+
+                // Objetos da Direita - ALINHAMENTO COM ESPAÇAMENTO CONSISTENTE
+                const spacing = 12; // Espaço entre objetos e margem direita
+                let rightXOffset = CANVAS_W - spacing; // Começa com o espaçamento da borda direita
+                
+                // Itera de trás para frente para alinhar da direita para esquerda
+                for (let i = objectsList.length - 1; i >= 0; i--) {
+                    const obj = objectsList[i];
+                    const targetHeight = 150; // ALTURA TOTAL DA MOLDURA
+                    const ratio = obj.img.width / obj.img.height;
+                    const drawH = targetHeight;
+                    const drawW = drawH * ratio;
+                    const yPos = (CANVAS_H - drawH) / 2;
+                    
+                    // Posiciona o objeto
+                    rightXOffset -= drawW;
+                    ctx.drawImage(obj.img, rightXOffset, yPos, drawW, drawH);
+                    
+                    // Adiciona espaçamento para o próximo (ou margem final)
+                    rightXOffset -= spacing;
+                }
+
+                // Logo Esquerda - altura 150px mantendo proporção, começando em 12px da esquerda
+                let xOffset = 12;
+                if (logoEsquerda) {
+                    const targetHeight = 150;
+                    const ratio = logoEsquerda.width / logoEsquerda.height;
+                    const drawH = targetHeight;
+                    const drawW = drawH * ratio;
+                    ctx.drawImage(logoEsquerda, xOffset, (CANVAS_H - drawH) / 2, drawW, drawH);
+                    xOffset += drawW + 40;
+                }
+
+                // Textos - SEMPRE CENTRALIZADOS VERTICALMENTE
+                ctx.fillStyle = '#374151';
+                ctx.textAlign = 'left';
+
+                const valTitulo = inputs.titulo.value;
+                const valSub = inputs.subtitulo.value || "";
+                const valData = inputs.data.value || "";
+
+                const hasTitulo = valTitulo.trim() !== "";
+                const hasSub = valSub.trim() !== "";
+                const hasData = valData.trim() !== "";
+
+                // Calcular altura total do bloco de texto para centralização
+                let totalTextHeight = 0;
+                let tituloHeight = 0;
+                let subHeight = 0;
+                let dataHeight = 0;
+                let spacingBetween = 0;
+
+                if (hasTitulo) {
+                    tituloHeight = 44; // altura aproximada do título
+                    totalTextHeight += tituloHeight;
+                }
+                
+                if (hasSub) {
+                    subHeight = 26; // altura aproximada do subtítulo
+                    spacingBetween = 4; // espaço entre linhas
+                    totalTextHeight += subHeight + spacingBetween;
+                }
+                
+                if (hasData) {
+                    dataHeight = 22; // altura aproximada da data
+                    if (!hasSub) spacingBetween = 4;
+                    else spacingBetween = 4;
+                    totalTextHeight += dataHeight + spacingBetween;
+                }
+
+                // Remover o último espaçamento extra
+                if (hasSub || hasData) {
+                    totalTextHeight -= spacingBetween;
+                }
+
+                // Posição Y inicial para centralizar o bloco inteiro
+                let startY = (CANVAS_H - totalTextHeight) / 2;
+                let currentY = startY;
+
+                // Desenhar título
+                if (hasTitulo) {
+                    ctx.font = 'bold 40px Inter';
+                    ctx.textBaseline = 'top';
+                    ctx.fillText(valTitulo, xOffset, currentY);
+                    currentY += tituloHeight;
+                }
+
+                // Desenhar subtítulo
+                if (hasSub) {
+                    ctx.font = '600 22px Inter';
+                    ctx.globalAlpha = 0.9;
+                    ctx.textBaseline = 'top';
+                    currentY += spacingBetween;
+                    ctx.fillText(valSub, xOffset, currentY);
+                    currentY += subHeight;
+                }
+
+                // Desenhar data
+                if (hasData) {
+                    ctx.font = '400 18px Inter';
+                    ctx.globalAlpha = 0.7;
+                    ctx.textBaseline = 'top';
+                    currentY += spacingBetween;
+                    ctx.fillText(valData, xOffset, currentY);
+                }
+
+                ctx.globalAlpha = 1.0;
+            };
+
+            inputs.objectFile.addEventListener('change', function(e) {
+                const files = Array.from(e.target.files);
+                files.forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        const img = new Image();
+                        img.onload = function() {
+                            const objId = Date.now() + Math.random();
+                            objectsList.push({ id: objId, img: img });
+                            renderObjectsUI();
+                            window.draw();
+                        };
+                        img.src = event.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                });
+                this.value = "";
+            });
+
+            function renderObjectsUI() {
+                const container = document.getElementById('objects-list');
+                container.innerHTML = "";
+                objectsList.forEach((obj, index) => {
+                    const div = document.createElement('div');
+                    div.className = "flex items-center justify-between p-2 bg-slate-50 border border-slate-200 rounded-lg";
+                    div.innerHTML = `
+                        <div class="flex items-center gap-2">
+                            <img src="${obj.img.src}" class="w-10 h-10 object-contain bg-white border border-slate-200 rounded">
+                            <span class="text-xs font-medium text-slate-600">Objeto ${index + 1}</span>
+                        </div>
+                        <button onclick="removeObject(${obj.id})" class="text-red-500 hover:text-red-700 p-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-4v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                        </button>
+                    `;
+                    container.appendChild(div);
+                });
+            }
+
+            window.removeObject = function(id) {
+                objectsList = objectsList.filter(o => o.id !== id);
+                renderObjectsUI();
+                window.draw();
+            };
+
+            window.downloadImage = function() {
+                const link = document.createElement('a');
+                link.download = `moldura-festa-net-${Date.now()}.png`;
+                link.href = canvas.toDataURL('image/png', 1.0);
+                link.click();
+            };
+
+            Object.values(inputs).forEach(input => {
+                if (input && !['input-logo', 'input-object-file'].includes(input.id)) {
+                    input.addEventListener('input', window.draw);
+                }
+            });
+
+            inputs.logo.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(ev) {
+                        const img = new Image();
+                        img.onload = function() { logoEsquerda = img; window.draw(); };
+                        img.src = ev.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            document.getElementById('btn-reset').addEventListener('click', () => {
+                if(confirm('Resetar todas as configurações?')) location.reload();
+            });
+
+            window.onload = () => { window.draw(); setTimeout(window.draw, 500); };
+            if (document.readyState === "complete") window.draw();
+        })();
+    </script>
+</body>
+</html>
